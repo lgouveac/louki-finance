@@ -60,7 +60,9 @@ export async function getStocks(): Promise<Stock[]> {
       return [];
     }
     
-    const stocks = negociacoes.map(mapNegociacaoToStock);
+    // Explicitly cast the data to match our Negociacao type
+    const typedNegociacoes = negociacoes as Negociacao[];
+    const stocks = typedNegociacoes.map(mapNegociacaoToStock);
     return groupStocksBySymbol(stocks);
   } catch (err) {
     console.error('Unexpected error in getStocks:', err);
@@ -79,7 +81,8 @@ export async function getProventos(): Promise<Provento[]> {
       return [];
     }
     
-    return proventos || [];
+    // Explicitly cast the data to match our Provento type
+    return proventos as Provento[] || [];
   } catch (err) {
     console.error('Unexpected error in getProventos:', err);
     return [];

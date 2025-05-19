@@ -34,13 +34,13 @@ export interface Negociacao {
   Preço: number;
   Valor: number;
   criado_em?: string;
-  "Data do Negócio"?: Date;
+  "Data do Negócio"?: string; // Changed from Date to string to match Supabase
 }
 
 export interface Provento {
   id: string;
   Movimentação?: string;
-  Data?: Date;
+  Data?: string; // Changed from Date to string to match Supabase
   Quantidade?: number;
   "Preço unitário"?: number;
   "Valor da Operação"?: number;
