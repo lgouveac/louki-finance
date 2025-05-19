@@ -22,3 +22,30 @@ export interface SectorAllocation {
   value: number;
   percentage: number;
 }
+
+export interface Negociacao {
+  id: string;
+  Quantidade: number;
+  "Tipo de Movimentação"?: string;
+  Mercado?: string;
+  "Prazo/Vencimento"?: string;
+  Instituição?: string;
+  "Código de Negociação": string;
+  Preço: number;
+  Valor: number;
+  criado_em?: string;
+  "Data do Negócio"?: Date;
+}
+
+export interface Provento {
+  id: string;
+  Movimentação?: string;
+  Data?: Date;
+  Quantidade?: number;
+  "Preço unitário"?: number;
+  "Valor da Operação"?: number;
+  Produto?: string;
+  "Entrada/Saída"?: string;
+  Instituição?: string;
+  criado_em?: string;
+}

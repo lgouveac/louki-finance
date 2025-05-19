@@ -1,13 +1,15 @@
 
 import { useEffect, useState } from "react";
-import { Stock, PortfolioSummary, SectorAllocation } from "@/types/stock";
-import { getStocks, getPortfolioSummary, getSectorAllocation } from "@/services/stockService";
+import { Stock, PortfolioSummary, SectorAllocation, Provento } from "@/types/stock";
+import { getStocks, getPortfolioSummary, getSectorAllocation, getProventos } from "@/services/stockService";
 import { StockHeader } from "@/components/StockHeader";
 import { StockList } from "@/components/StockList";
 import { SectorChart } from "@/components/SectorChart";
+import { ProventosList } from "@/components/ProventosList";
 
 const Index = () => {
   const [stocks, setStocks] = useState<Stock[]>([]);
+  const [proventos, setProventos] = useState<Provento[]>([]);
   const [summary, setSummary] = useState<PortfolioSummary>({
     totalValue: 0,
     totalGain: 0,
@@ -18,11 +20,30 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Carregar dados mockados (serão substituídos pelo Supabase posteriormente)
-    setStocks(getStocks());
-    setSummary(getPortfolioSummary());
-    setSectorAllocation(getSectorAllocation());
-    setIsLoading(false);
+    async function fetchData() {
+      try {
+        setIsLoading(true);
+        
+        // Fetch all data in parallel
+        const [stocksData, summaryData, sectorData, proventosData] = await Promise.all([
+          getStocks(),
+          getPortfolioSummary(),
+          getSectorAllocation(),
+          getProventos()
+        ]);
+        
+        setStocks(stocksData);
+        setSummary(summaryData);
+        setSectorAllocation(sectorData);
+        setProventos(proventosData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    
+    fetchData();
   }, []);
 
   if (isLoading) {
@@ -39,6 +60,8 @@ const Index = () => {
         <StockHeader summary={summary} />
         
         <StockList stocks={stocks} />
+        
+        <ProventosList proventos={proventos} />
         
         <SectorChart data={sectorAllocation} />
       </div>

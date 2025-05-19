@@ -1,91 +1,98 @@
 
-import { Stock, PortfolioSummary, SectorAllocation } from "@/types/stock";
+import { Stock, PortfolioSummary, SectorAllocation, Negociacao, Provento } from "@/types/stock";
+import { supabase } from "@/integrations/supabase/client";
 
-// Dados mockados para a demonstração
-const mockStocks: Stock[] = [
-  {
-    symbol: "PETR4",
-    name: "Petrobras",
-    price: 38.42,
-    change: 0.68,
-    changePercent: 1.80,
-    sector: "Petróleo",
-    shares: 100,
-    costBasis: 35.20
-  },
-  {
-    symbol: "VALE3",
-    name: "Vale",
-    price: 67.35,
-    change: -1.25,
-    changePercent: -1.82,
-    sector: "Mineração",
-    shares: 50,
-    costBasis: 72.18
-  },
-  {
-    symbol: "ITUB4",
-    name: "Itaú Unibanco",
-    price: 34.78,
-    change: 0.36,
-    changePercent: 1.05,
-    sector: "Financeiro",
-    shares: 200,
-    costBasis: 30.15
-  },
-  {
-    symbol: "BBDC4",
-    name: "Bradesco",
-    price: 14.92,
-    change: -0.23,
-    changePercent: -1.52,
-    sector: "Financeiro",
-    shares: 150,
-    costBasis: 16.35
-  },
-  {
-    symbol: "MGLU3",
-    name: "Magazine Luiza",
-    price: 1.92,
-    change: 0.05,
-    changePercent: 2.67,
-    sector: "Varejo",
-    shares: 500,
-    costBasis: 3.45
-  },
-  {
-    symbol: "WEGE3",
-    name: "WEG",
-    price: 37.81,
-    change: 0.57,
-    changePercent: 1.53,
-    sector: "Bens Industriais",
-    shares: 80,
-    costBasis: 32.40
-  },
-  {
-    symbol: "ABEV3",
-    name: "Ambev",
-    price: 14.12,
-    change: -0.18,
-    changePercent: -1.26,
-    sector: "Consumo",
-    shares: 300,
-    costBasis: 13.20
+// Map Supabase data to Stock interface
+const mapNegociacaoToStock = (negociacao: Negociacao): Stock => {
+  // Use data from negociacao to create a stock object
+  // This is a simplified mapping, you may need to adjust based on your data
+  return {
+    symbol: negociacao["Código de Negociação"],
+    name: negociacao["Código de Negociação"], // Using the code as name since there's no separate name field
+    price: negociacao.Preço,
+    change: 0, // These values are not in the negociacao table
+    changePercent: 0, // Would need additional calculation or data source
+    sector: "N/A", // Sector information not available in current data
+    shares: negociacao.Quantidade,
+    costBasis: negociacao.Preço
+  };
+};
+
+// Function to group stocks by symbol
+const groupStocksBySymbol = (stocks: Stock[]): Stock[] => {
+  const stockMap = new Map<string, Stock>();
+  
+  stocks.forEach(stock => {
+    const existingStock = stockMap.get(stock.symbol);
+    
+    if (existingStock) {
+      // Calculate weighted average cost basis
+      const totalShares = existingStock.shares + stock.shares;
+      const newCostBasis = ((existingStock.costBasis * existingStock.shares) + 
+                           (stock.costBasis * stock.shares)) / totalShares;
+      
+      stockMap.set(stock.symbol, {
+        ...existingStock,
+        shares: totalShares,
+        costBasis: newCostBasis
+      });
+    } else {
+      stockMap.set(stock.symbol, { ...stock });
+    }
+  });
+  
+  return Array.from(stockMap.values());
+};
+
+export async function getStocks(): Promise<Stock[]> {
+  try {
+    const { data: negociacoes, error } = await supabase
+      .from('negociacoes')
+      .select('*');
+    
+    if (error) {
+      console.error('Error fetching stock data:', error);
+      return [];
+    }
+    
+    if (!negociacoes || negociacoes.length === 0) {
+      console.log('No stock data found');
+      return [];
+    }
+    
+    const stocks = negociacoes.map(mapNegociacaoToStock);
+    return groupStocksBySymbol(stocks);
+  } catch (err) {
+    console.error('Unexpected error in getStocks:', err);
+    return [];
   }
-];
-
-export function getStocks(): Stock[] {
-  return mockStocks;
 }
 
-export function getPortfolioSummary(): PortfolioSummary {
-  const stocks = getStocks();
+export async function getProventos(): Promise<Provento[]> {
+  try {
+    const { data: proventos, error } = await supabase
+      .from('proventos')
+      .select('*');
+    
+    if (error) {
+      console.error('Error fetching proventos data:', error);
+      return [];
+    }
+    
+    return proventos || [];
+  } catch (err) {
+    console.error('Unexpected error in getProventos:', err);
+    return [];
+  }
+}
+
+export async function getPortfolioSummary(): Promise<PortfolioSummary> {
+  const stocks = await getStocks();
   
   const totalValue = stocks.reduce((sum, stock) => sum + (stock.price * stock.shares), 0);
   const totalInvested = stocks.reduce((sum, stock) => sum + (stock.costBasis * stock.shares), 0);
   const totalGain = totalValue - totalInvested;
-  const totalGainPercent = (totalGain / totalInvested) * 100;
+  const totalGainPercent = totalInvested > 0 ? (totalGain / totalInvested) * 100 : 0;
   
   return {
     totalValue,
@@ -95,8 +102,8 @@ export function getPortfolioSummary(): PortfolioSummary {
   };
 }
 
-export function getSectorAllocation(): SectorAllocation[] {
-  const stocks = getStocks();
+export async function getSectorAllocation(): Promise<SectorAllocation[]> {
+  const stocks = await getStocks();
   
   // Calcular o valor total da carteira
   const totalValue = stocks.reduce((sum, stock) => sum + (stock.price * stock.shares), 0);
@@ -114,7 +121,7 @@ export function getSectorAllocation(): SectorAllocation[] {
   const sectorAllocation: SectorAllocation[] = Array.from(sectorMap.entries()).map(([sector, value]) => ({
     sector,
     value,
-    percentage: (value / totalValue) * 100
+    percentage: totalValue > 0 ? (value / totalValue) * 100 : 0
   }));
   
   // Ordenar do maior para o menor
