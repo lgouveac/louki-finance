@@ -42,7 +42,10 @@ const Index = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-lg">Carregando dados...</p>
+        <div className="flex flex-col items-center">
+          <div className="animate-pulse h-16 w-16 mb-4 rounded-full bg-muted"></div>
+          <p className="text-lg">Carregando dados...</p>
+        </div>
       </div>
     );
   }
@@ -51,9 +54,7 @@ const Index = () => {
     <div className="min-h-screen bg-background p-4 md:p-6">
       <div className="mx-auto max-w-7xl">
         <StockHeader summary={summary} />
-        
         <DataTabView />
-        
         <SectorChart data={sectorAllocation} />
       </div>
     </div>

@@ -103,6 +103,19 @@ export type Database = {
         }
         Relationships: []
       }
+      mudancas_inexplicadas: {
+        Row: {
+          codigo: string | null
+          data: string | null
+          delta: number | null
+          movimentacao: string | null
+          posicao_acumulada: number | null
+          posicao_anterior: number | null
+          quantidade_dia: number | null
+          quantidade_evento: number | null
+        }
+        Relationships: []
+      }
       proventos_recebidos: {
         Row: {
           codigo: string | null
