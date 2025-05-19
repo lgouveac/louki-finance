@@ -96,6 +96,8 @@ export type Database = {
         Row: {
           codigo: string | null
           preco_medio: number | null
+          proventos_por_acao: number | null
+          proventos_total: number | null
           quantidade_total: number | null
           valor_total: number | null
         }

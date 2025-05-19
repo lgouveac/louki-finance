@@ -10,7 +10,7 @@ export const getCarteiraAtual = async (): Promise<CarteiraAtual[]> => {
     
     if (error) {
       console.error('Error fetching carteira_atual view:', error);
-      return [];
+      throw error;
     }
     
     return data as CarteiraAtual[] || [];
@@ -28,7 +28,7 @@ export const getProventosRecebidos = async (): Promise<ProventosRecebidos[]> => 
     
     if (error) {
       console.error('Error fetching proventos_recebidos view:', error);
-      return [];
+      throw error;
     }
     
     return data as ProventosRecebidos[] || [];
