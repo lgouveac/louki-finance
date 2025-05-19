@@ -92,7 +92,39 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      carteira_atual: {
+        Row: {
+          codigo: string | null
+          preco_medio: number | null
+          quantidade_total: number | null
+          valor_total: number | null
+        }
+        Relationships: []
+      }
+      proventos_recebidos: {
+        Row: {
+          codigo: string | null
+          Data: string | null
+          Quantidade: number | null
+          tipo: string | null
+          valor: number | null
+        }
+        Insert: {
+          codigo?: string | null
+          Data?: string | null
+          Quantidade?: number | null
+          tipo?: string | null
+          valor?: number | null
+        }
+        Update: {
+          codigo?: string | null
+          Data?: string | null
+          Quantidade?: number | null
+          tipo?: string | null
+          valor?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

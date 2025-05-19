@@ -49,3 +49,20 @@ export interface Provento {
   Instituição?: string;
   criado_em?: string;
 }
+
+// Interface for carteira_atual view
+export interface CarteiraAtual {
+  codigo: string | null;
+  quantidade_total: number | null;
+  preco_medio: number | null;
+  valor_total: number | null;
+}
+
+// Interface for proventos_recebidos view
+export interface ProventosRecebidos {
+  codigo: string | null;
+  Data: string | null;
+  Quantidade: number | null;
+  tipo: string | null;
+  valor: number | null;
+}
