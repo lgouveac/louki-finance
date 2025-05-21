@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { PortfolioSummary, SectorAllocation } from "@/types/stock";
 import { getPortfolioSummary, getSectorAllocation } from "@/services/stockService";
 import { StockHeader } from "@/components/StockHeader";
-import { SectorChart } from "@/components/SectorChart";
 import { DataTabView } from "@/components/DataTabView";
 
 const Index = () => {
@@ -13,7 +12,6 @@ const Index = () => {
     totalGainPercent: 0,
     totalInvested: 0
   });
-  const [sectorAllocation, setSectorAllocation] = useState<SectorAllocation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,14 +19,9 @@ const Index = () => {
       try {
         setIsLoading(true);
         
-        // Fetch summary and sector data
-        const [summaryData, sectorData] = await Promise.all([
-          getPortfolioSummary(),
-          getSectorAllocation()
-        ]);
-        
+        // Fetch summary data
+        const summaryData = await getPortfolioSummary();
         setSummary(summaryData);
-        setSectorAllocation(sectorData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -55,7 +48,6 @@ const Index = () => {
       <div className="mx-auto max-w-7xl">
         <StockHeader summary={summary} />
         <DataTabView />
-        <SectorChart data={sectorAllocation} />
       </div>
     </div>
   );

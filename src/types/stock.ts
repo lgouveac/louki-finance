@@ -1,4 +1,3 @@
-
 export interface Stock {
   symbol: string;
   name: string;
@@ -50,12 +49,17 @@ export interface Provento {
   criado_em?: string;
 }
 
-// Interface for carteira_atual view
+// Interface for carteira_consolidada view
 export interface CarteiraAtual {
   codigo: string | null;
   quantidade_total: number | null;
   preco_medio: number | null;
-  valor_total: number | null;
+  preco_atual: number | null;
+  valor_investido: number | null;
+  valor_atual: number | null;
+  rentabilidade_perc: number | null;
+  rentabilidade_com_proventos_perc: number | null;
+  proventos_recebidos: number | null;
 }
 
 // Interface for proventos_recebidos view

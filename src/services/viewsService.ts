@@ -5,11 +5,11 @@ import { CarteiraAtual, ProventosRecebidos } from "@/types/stock";
 export const getCarteiraAtual = async (): Promise<CarteiraAtual[]> => {
   try {
     const { data, error } = await supabase
-      .from('carteira_atual')
+      .from('carteira_consolidada')
       .select('*');
     
     if (error) {
-      console.error('Error fetching carteira_atual view:', error);
+      console.error('Error fetching carteira_consolidada view:', error);
       throw error;
     }
     

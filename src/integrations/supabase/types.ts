@@ -9,9 +9,24 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      aliases: {
+        Row: {
+          codigo_negociacao: string
+          codigo_posicao: string
+        }
+        Insert: {
+          codigo_negociacao: string
+          codigo_posicao: string
+        }
+        Update: {
+          codigo_negociacao?: string
+          codigo_posicao?: string
+        }
+        Relationships: []
+      }
       negociacoes: {
         Row: {
-          "Código de Negociação": string | null
+          Codigo: string | null
           criado_em: string | null
           "Data do Negócio": string | null
           id: string
@@ -24,7 +39,7 @@ export type Database = {
           Valor: number | null
         }
         Insert: {
-          "Código de Negociação"?: string | null
+          Codigo?: string | null
           criado_em?: string | null
           "Data do Negócio"?: string | null
           id?: string
@@ -37,7 +52,7 @@ export type Database = {
           Valor?: number | null
         }
         Update: {
-          "Código de Negociação"?: string | null
+          Codigo?: string | null
           criado_em?: string | null
           "Data do Negócio"?: string | null
           id?: string
@@ -48,6 +63,39 @@ export type Database = {
           Quantidade?: number | null
           "Tipo de Movimentação"?: string | null
           Valor?: number | null
+        }
+        Relationships: []
+      }
+      posicao_atualizada: {
+        Row: {
+          codigo: string | null
+          criado_em: string | null
+          id: string
+          Produto: string | null
+          Quantidade: number | null
+          "Quantidade Disponível": number | null
+          Tipo: string | null
+          "Valor Atualizado": number | null
+        }
+        Insert: {
+          codigo?: string | null
+          criado_em?: string | null
+          id?: string
+          Produto?: string | null
+          Quantidade?: number | null
+          "Quantidade Disponível"?: number | null
+          Tipo?: string | null
+          "Valor Atualizado"?: number | null
+        }
+        Update: {
+          codigo?: string | null
+          criado_em?: string | null
+          id?: string
+          Produto?: string | null
+          Quantidade?: number | null
+          "Quantidade Disponível"?: number | null
+          Tipo?: string | null
+          "Valor Atualizado"?: number | null
         }
         Relationships: []
       }
@@ -92,27 +140,17 @@ export type Database = {
       }
     }
     Views: {
-      carteira_atual: {
+      carteira_consolidada: {
         Row: {
           codigo: string | null
+          preco_atual: number | null
           preco_medio: number | null
-          proventos_por_acao: number | null
-          proventos_total: number | null
+          proventos_recebidos: number | null
           quantidade_total: number | null
-          valor_total: number | null
-        }
-        Relationships: []
-      }
-      mudancas_inexplicadas: {
-        Row: {
-          codigo: string | null
-          data: string | null
-          delta: number | null
-          movimentacao: string | null
-          posicao_acumulada: number | null
-          posicao_anterior: number | null
-          quantidade_dia: number | null
-          quantidade_evento: number | null
+          rentabilidade_com_proventos_perc: number | null
+          rentabilidade_perc: number | null
+          valor_atual: number | null
+          valor_investido: number | null
         }
         Relationships: []
       }
