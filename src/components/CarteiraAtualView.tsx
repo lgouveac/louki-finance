@@ -36,6 +36,7 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
         <TableHeader>
           <TableRow className="hover:bg-transparent">
             <TableHead className="font-semibold">Código</TableHead>
+            <TableHead className="font-semibold">Tipo</TableHead>
             <TableHead className="text-right font-semibold">Quantidade</TableHead>
             <TableHead className="text-right font-semibold">Preço Médio</TableHead>
             <TableHead className="text-right font-semibold">Preço Atual</TableHead>
@@ -53,6 +54,7 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
               className="hover:bg-muted/50 transition-colors duration-200"
             >
               <TableCell className="font-medium">{item.codigo || '-'}</TableCell>
+              <TableCell>{item.Tipo || '-'}</TableCell>
               <TableCell className="text-right">
                 {item.quantidade_total?.toLocaleString('pt-BR') || '-'}
               </TableCell>
