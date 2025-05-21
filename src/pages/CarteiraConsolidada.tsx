@@ -93,7 +93,7 @@ const CarteiraConsolidada = () => {
                   <SelectValue placeholder="Filtrar por tipo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos os tipos</SelectItem>
+                  <SelectItem value="_all">Todos os tipos</SelectItem>
                   {tipoOptions.map((tipo) => (
                     <SelectItem key={tipo} value={tipo}>
                       {tipo}
@@ -104,7 +104,7 @@ const CarteiraConsolidada = () => {
             </div>
           </div>
           
-          <DataTabView searchQuery={searchQuery} tipoFilter={tipoFilter} />
+          <DataTabView searchQuery={searchQuery} tipoFilter={tipoFilter === "_all" ? "" : tipoFilter} />
         </div>
       </div>
     </div>
