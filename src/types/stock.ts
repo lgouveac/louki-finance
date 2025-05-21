@@ -1,3 +1,4 @@
+
 export interface Stock {
   symbol: string;
   name: string;
@@ -29,17 +30,17 @@ export interface Negociacao {
   Mercado?: string;
   "Prazo/Vencimento"?: string;
   Instituição?: string;
-  "Código de Negociação": string;
+  Codigo: string; // Changed from "Código de Negociação" to match DB column
   Preço: number;
   Valor: number;
   criado_em?: string;
-  "Data do Negócio"?: string; // Changed from Date to string to match Supabase
+  "Data do Negócio"?: string;
 }
 
 export interface Provento {
   id: string;
   Movimentação?: string;
-  Data?: string; // Changed from Date to string to match Supabase
+  Data?: string;
   Quantidade?: number;
   "Preço unitário"?: number;
   "Valor da Operação"?: number;
@@ -60,6 +61,7 @@ export interface CarteiraAtual {
   rentabilidade_perc: number | null;
   rentabilidade_com_proventos_perc: number | null;
   proventos_recebidos: number | null;
+  Tipo: string | null;
 }
 
 // Interface for proventos_recebidos view
@@ -69,4 +71,11 @@ export interface ProventosRecebidos {
   Quantidade: number | null;
   tipo: string | null;
   valor: number | null;
+}
+
+// Interface for dashboard view
+export interface DashboardData {
+  Tipo: string | null;
+  percentual: number | null;
+  valor_total: number | null;
 }

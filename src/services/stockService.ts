@@ -7,8 +7,8 @@ const mapNegociacaoToStock = (negociacao: Negociacao): Stock => {
   // Use data from negociacao to create a stock object
   // This is a simplified mapping, you may need to adjust based on your data
   return {
-    symbol: negociacao["Código de Negociação"],
-    name: negociacao["Código de Negociação"], // Using the code as name since there's no separate name field
+    symbol: negociacao.Codigo,
+    name: negociacao.Codigo, // Using the code as name since there's no separate name field
     price: negociacao.Preço,
     change: 0, // These values are not in the negociacao table
     changePercent: 0, // Would need additional calculation or data source
@@ -61,7 +61,7 @@ export async function getStocks(): Promise<Stock[]> {
     }
     
     // Explicitly cast the data to match our Negociacao type
-    const typedNegociacoes = negociacoes as Negociacao[];
+    const typedNegociacoes = negociacoes as unknown as Negociacao[];
     const stocks = typedNegociacoes.map(mapNegociacaoToStock);
     return groupStocksBySymbol(stocks);
   } catch (err) {

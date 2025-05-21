@@ -149,8 +149,17 @@ export type Database = {
           quantidade_total: number | null
           rentabilidade_com_proventos_perc: number | null
           rentabilidade_perc: number | null
+          Tipo: string | null
           valor_atual: number | null
           valor_investido: number | null
+        }
+        Relationships: []
+      }
+      dashboard: {
+        Row: {
+          percentual: number | null
+          Tipo: string | null
+          valor_total: number | null
         }
         Relationships: []
       }
