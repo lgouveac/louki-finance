@@ -70,7 +70,7 @@ export function DashboardView() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="shadow-md border-border/40">
           <CardContent className="p-4 flex items-center gap-3">
             <CoinsIcon className="h-10 w-10 text-blue-400 p-2 bg-blue-400/10 rounded-full" />
@@ -110,7 +110,101 @@ export function DashboardView() {
             </div>
           </CardContent>
         </Card>
+
+        <Card className="shadow-md border-border/40">
+          <CardContent className="p-4 flex items-center gap-3">
+            <CoinsIcon className="h-10 w-10 text-amber-400 p-2 bg-amber-400/10 rounded-full" />
+            <div>
+              <p className="text-muted-foreground text-sm">Proventos Recebidos</p>
+              <p className="text-xl font-bold text-amber-500">
+                R$ {(rentabilidade.total_proventos || 0).toLocaleString('pt-BR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                })}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      <Card className="shadow-md border-border/40">
+        <CardHeader>
+          <CardTitle className="text-xl">Resumo de Rentabilidade</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Valor Investido:</span>
+                <span className="font-medium">
+                  R$ {(rentabilidade.total_investido || 0).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  })}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Valor Atual:</span>
+                <span className="font-medium">
+                  R$ {(rentabilidade.total_atual || 0).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  })}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Rendimento sem Proventos:</span>
+                <span className={`font-medium ${isPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                  R$ {(rentabilidade.rentabilidade_sem_proventos || 0).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                    signDisplay: 'exceptZero'
+                  })}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Total de Proventos:</span>
+                <span className="font-medium text-amber-500">
+                  R$ {(rentabilidade.total_proventos || 0).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  })}
+                </span>
+              </div>
+              <div className="flex justify-between pt-3 border-t">
+                <span className="text-muted-foreground">Rendimento com Proventos:</span>
+                <span className={`font-medium ${(rentabilidade.rentabilidade_com_proventos || 0) >= 0 ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                  R$ {(rentabilidade.rentabilidade_com_proventos || 0).toLocaleString('pt-BR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                    signDisplay: 'exceptZero'
+                  })}
+                </span>
+              </div>
+            </div>
+            <div className="flex flex-col justify-center items-center space-y-4">
+              <div className="w-32 h-32 rounded-full border-8 flex items-center justify-center relative">
+                <div className="text-center">
+                  <p className={`text-2xl font-bold ${isPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                    {rendimentoPercent.toFixed(2)}%
+                  </p>
+                  <p className="text-xs text-muted-foreground">sem proventos</p>
+                </div>
+              </div>
+              <div className="w-32 h-32 rounded-full border-8 flex items-center justify-center border-amber-500">
+                <div className="text-center">
+                  <p className={`text-2xl font-bold ${(rentabilidade.rentabilidade_com_proventos || 0) >= 0 ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                    {rentabilidade.total_investido && rentabilidade.total_investido > 0
+                      ? ((rentabilidade.rentabilidade_com_proventos || 0) / rentabilidade.total_investido * 100).toFixed(2)
+                      : '0.00'}%
+                  </p>
+                  <p className="text-xs text-muted-foreground">com proventos</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

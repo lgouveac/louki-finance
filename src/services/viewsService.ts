@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { CarteiraAtual, ProventosRecebidos, DashboardData, Rentabilidade } from "@/types/stock";
 
