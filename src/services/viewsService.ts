@@ -1,6 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
-import { CarteiraAtual, ProventosRecebidos, DashboardData } from "@/types/stock";
+import { CarteiraAtual, ProventosRecebidos, DashboardData, Rentabilidade } from "@/types/stock";
 
 export const getCarteiraAtual = async (): Promise<CarteiraAtual[]> => {
   try {
@@ -52,6 +51,24 @@ export const getDashboardData = async (): Promise<DashboardData[]> => {
     return data as DashboardData[] || [];
   } catch (err) {
     console.error('Unexpected error in getDashboardData:', err);
+    return [];
+  }
+};
+
+export const getRentabilidade = async (): Promise<Rentabilidade[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('rentabilidade')
+      .select('*');
+    
+    if (error) {
+      console.error('Error fetching rentabilidade view:', error);
+      throw error;
+    }
+    
+    return data as Rentabilidade[] || [];
+  } catch (err) {
+    console.error('Unexpected error in getRentabilidade:', err);
     return [];
   }
 };

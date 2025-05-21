@@ -187,6 +187,16 @@ export type Database = {
         }
         Relationships: []
       }
+      rentabilidade: {
+        Row: {
+          rentabilidade_com_proventos: number | null
+          rentabilidade_sem_proventos: number | null
+          total_atual: number | null
+          total_investido: number | null
+          total_proventos: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

@@ -1,10 +1,10 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { getDashboardData } from "@/services/viewsService";
+import { getDashboardData, getRentabilidade } from "@/services/viewsService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CoinsIcon } from "lucide-react";
+import { CoinsIcon, TrendingUpIcon, TrendingDownIcon } from "lucide-react";
 
 // Define an array of colors for the pie chart
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#a4de6c', '#d0ed57', '#83a6ed'];
@@ -12,13 +12,25 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff8042', '#a4de6c', '#d0ed57'
 export function DashboardView() {
   const {
     data: dashboardData = [],
-    isLoading,
-    error
+    isLoading: isDashboardLoading,
+    error: dashboardError
   } = useQuery({
     queryKey: ['dashboard_data'],
     queryFn: getDashboardData,
     refetchOnWindowFocus: false,
   });
+
+  const {
+    data: rentabilidadeData = [],
+    isLoading: isRentabilidadeLoading,
+    error: rentabilidadeError
+  } = useQuery({
+    queryKey: ['rentabilidade_data'],
+    queryFn: getRentabilidade,
+    refetchOnWindowFocus: false,
+  });
+
+  const isLoading = isDashboardLoading || isRentabilidadeLoading;
 
   if (isLoading) {
     return (
@@ -28,7 +40,7 @@ export function DashboardView() {
     );
   }
 
-  if (error || dashboardData.length === 0) {
+  if ((dashboardError && dashboardData.length === 0) || (rentabilidadeError && rentabilidadeData.length === 0)) {
     return (
       <div className="flex justify-center items-center h-[300px] border rounded-lg p-4">
         <p className="text-muted-foreground">Não foi possível carregar os dados do dashboard.</p>
@@ -38,9 +50,68 @@ export function DashboardView() {
 
   // Prepare data for rendering
   const totalValue = dashboardData.reduce((sum, item) => sum + (item.valor_total || 0), 0);
+  
+  // Rentabilidade data - get the first item as it contains the summary
+  const rentabilidade = rentabilidadeData[0] || {
+    rentabilidade_sem_proventos: 0,
+    total_atual: 0,
+    total_investido: 0,
+    rentabilidade_com_proventos: 0,
+    total_proventos: 0
+  };
+  
+  // Calculate percentage
+  const rendimentoPercent = rentabilidade.total_investido && rentabilidade.total_investido > 0
+    ? ((rentabilidade.rentabilidade_sem_proventos || 0) / rentabilidade.total_investido) * 100
+    : 0;
+
+  // Check if rendimento is positive or negative
+  const isPositive = (rentabilidade.rentabilidade_sem_proventos || 0) >= 0;
 
   return (
     <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="shadow-md border-border/40">
+          <CardContent className="p-4 flex items-center gap-3">
+            <CoinsIcon className="h-10 w-10 text-blue-400 p-2 bg-blue-400/10 rounded-full" />
+            <div>
+              <p className="text-muted-foreground text-sm">Valor Total</p>
+              <p className="text-xl font-bold">
+                R$ {(rentabilidade.total_atual || 0).toLocaleString('pt-BR', { 
+                  minimumFractionDigits: 2, 
+                  maximumFractionDigits: 2 
+                })}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="shadow-md border-border/40">
+          <CardContent className="p-4 flex items-center gap-3">
+            {isPositive ? (
+              <TrendingUpIcon className="h-10 w-10 text-stock-positive p-2 bg-stock-positive/10 rounded-full" />
+            ) : (
+              <TrendingDownIcon className="h-10 w-10 text-stock-negative p-2 bg-stock-negative/10 rounded-full" />
+            )}
+            <div>
+              <p className="text-muted-foreground text-sm">Rendimento</p>
+              <div className="flex items-center gap-2">
+                <p className={`text-xl font-bold ${isPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                  R$ {(rentabilidade.rentabilidade_sem_proventos || 0).toLocaleString('pt-BR', { 
+                    minimumFractionDigits: 2, 
+                    maximumFractionDigits: 2, 
+                    signDisplay: 'exceptZero'
+                  })}
+                </p>
+                <span className={`text-sm ${isPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                  ({rendimentoPercent.toFixed(2)}%)
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle className="text-xl flex items-center gap-2">

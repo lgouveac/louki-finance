@@ -1,4 +1,3 @@
-
 export interface Stock {
   symbol: string;
   name: string;
@@ -78,4 +77,13 @@ export interface DashboardData {
   Tipo: string | null;
   percentual: number | null;
   valor_total: number | null;
+}
+
+// Interface for rentabilidade view
+export interface Rentabilidade {
+  rentabilidade_sem_proventos: number | null;
+  total_atual: number | null;
+  total_investido: number | null;
+  rentabilidade_com_proventos: number | null;
+  total_proventos: number | null;
 }
