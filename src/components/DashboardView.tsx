@@ -60,14 +60,9 @@ export function DashboardView() {
     total_proventos: 0
   };
   
-  // Calculate percentages correctly
-  const rendimentoSemProventosPercent = rentabilidade.total_investido && rentabilidade.total_investido > 0
-    ? ((rentabilidade.rentabilidade_sem_proventos || 0) / rentabilidade.total_investido) * 100
-    : 0;
-    
-  const rendimentoComProventosPercent = rentabilidade.total_investido && rentabilidade.total_investido > 0
-    ? ((rentabilidade.rentabilidade_com_proventos || 0) / rentabilidade.total_investido) * 100
-    : 0;
+  // Use the rentabilidade_sem_proventos_perc and rentabilidade_com_proventos_perc directly from the database
+  const rendimentoSemProventosPercent = rentabilidade.rentabilidade_sem_proventos_perc || 0;
+  const rendimentoComProventosPercent = rentabilidade.rentabilidade_com_proventos_perc || 0;
 
   // Check if rendimentos are positive or negative
   const isRendimentoSemProventosPositive = rendimentoSemProventosPercent >= 0;

@@ -87,4 +87,6 @@ export interface Rentabilidade {
   total_investido: number | null;
   rentabilidade_com_proventos: number | null;
   total_proventos: number | null;
+  rentabilidade_sem_proventos_perc: number | null;
+  rentabilidade_com_proventos_perc: number | null;
 }
