@@ -152,18 +152,9 @@ export function DashboardView() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Rendimento sem Proventos:</span>
-                <div className="flex items-center gap-2">
-                  <span className={`font-medium ${isRendimentoSemProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                    R$ {(rentabilidade.rentabilidade_sem_proventos || 0).toLocaleString('pt-BR', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                      signDisplay: 'exceptZero'
-                    })}
-                  </span>
-                  <span className={`text-sm ${isRendimentoSemProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                    ({rendimentoSemProventosPercent.toFixed(2)}%)
-                  </span>
-                </div>
+                <span className={`font-medium ${isRendimentoSemProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                  {rendimentoSemProventosPercent.toFixed(2)}%
+                </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Total de Proventos:</span>
@@ -176,22 +167,14 @@ export function DashboardView() {
               </div>
               <div className="flex justify-between pt-3 border-t">
                 <span className="text-muted-foreground">Rendimento com Proventos:</span>
-                <div className="flex items-center gap-2">
-                  <span className={`font-medium ${isRendimentoComProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                    R$ {(rentabilidade.rentabilidade_com_proventos || 0).toLocaleString('pt-BR', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                      signDisplay: 'exceptZero'
-                    })}
-                  </span>
-                  <span className={`text-sm ${isRendimentoComProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                    ({rendimentoComProventosPercent.toFixed(2)}%)
-                  </span>
-                </div>
+                <span className={`font-medium ${isRendimentoComProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                  {rendimentoComProventosPercent.toFixed(2)}%
+                </span>
               </div>
             </div>
-            <div className="flex flex-col justify-center items-center space-y-8">
-              <div className="flex items-center justify-between w-full">
+            
+            <div className="space-y-6">
+              <div className="flex items-center justify-between w-full bg-background/50 p-4 rounded-md">
                 <div className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full ${isRendimentoSemProventosPositive ? 'bg-stock-positive' : 'bg-stock-negative'}`}></div>
                   <span className="text-sm">Rendimento sem proventos</span>
@@ -201,7 +184,7 @@ export function DashboardView() {
                 </span>
               </div>
               
-              <div className="flex items-center justify-between w-full">
+              <div className="flex items-center justify-between w-full bg-background/50 p-4 rounded-md">
                 <div className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full ${isRendimentoComProventosPositive ? 'bg-stock-positive' : 'bg-stock-negative'}`}></div>
                   <span className="text-sm">Rendimento com proventos</span>
