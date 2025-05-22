@@ -60,13 +60,18 @@ export function DashboardView() {
     total_proventos: 0
   };
   
-  // Calculate percentage
-  const rendimentoPercent = rentabilidade.total_investido && rentabilidade.total_investido > 0
+  // Calculate percentages correctly
+  const rendimentoSemProventosPercent = rentabilidade.total_investido && rentabilidade.total_investido > 0
     ? ((rentabilidade.rentabilidade_sem_proventos || 0) / rentabilidade.total_investido) * 100
     : 0;
+    
+  const rendimentoComProventosPercent = rentabilidade.total_investido && rentabilidade.total_investido > 0
+    ? ((rentabilidade.rentabilidade_com_proventos || 0) / rentabilidade.total_investido) * 100
+    : 0;
 
-  // Check if rendimento is positive or negative
-  const isPositive = (rentabilidade.rentabilidade_sem_proventos || 0) >= 0;
+  // Check if rendimentos are positive or negative
+  const isRendimentoSemProventosPositive = rendimentoSemProventosPercent >= 0;
+  const isRendimentoComProventosPositive = rendimentoComProventosPercent >= 0;
 
   return (
     <div className="space-y-6">
@@ -88,24 +93,17 @@ export function DashboardView() {
         
         <Card className="shadow-md border-border/40">
           <CardContent className="p-4 flex items-center gap-3">
-            {isPositive ? (
+            {isRendimentoSemProventosPositive ? (
               <TrendingUpIcon className="h-10 w-10 text-stock-positive p-2 bg-stock-positive/10 rounded-full" />
             ) : (
               <TrendingDownIcon className="h-10 w-10 text-stock-negative p-2 bg-stock-negative/10 rounded-full" />
             )}
             <div>
-              <p className="text-muted-foreground text-sm">Rendimento</p>
+              <p className="text-muted-foreground text-sm">Rendimento (%)</p>
               <div className="flex items-center gap-2">
-                <p className={`text-xl font-bold ${isPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                  R$ {(rentabilidade.rentabilidade_sem_proventos || 0).toLocaleString('pt-BR', { 
-                    minimumFractionDigits: 2, 
-                    maximumFractionDigits: 2, 
-                    signDisplay: 'exceptZero'
-                  })}
+                <p className={`text-xl font-bold ${isRendimentoSemProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                  {rendimentoSemProventosPercent.toFixed(2)}%
                 </p>
-                <span className={`text-sm ${isPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                  ({rendimentoPercent.toFixed(2)}%)
-                </span>
               </div>
             </div>
           </CardContent>
@@ -154,13 +152,18 @@ export function DashboardView() {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Rendimento sem Proventos:</span>
-                <span className={`font-medium ${isPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                  R$ {(rentabilidade.rentabilidade_sem_proventos || 0).toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                    signDisplay: 'exceptZero'
-                  })}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-medium ${isRendimentoSemProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                    R$ {(rentabilidade.rentabilidade_sem_proventos || 0).toLocaleString('pt-BR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                      signDisplay: 'exceptZero'
+                    })}
+                  </span>
+                  <span className={`text-sm ${isRendimentoSemProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                    ({rendimentoSemProventosPercent.toFixed(2)}%)
+                  </span>
+                </div>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Total de Proventos:</span>
@@ -173,33 +176,39 @@ export function DashboardView() {
               </div>
               <div className="flex justify-between pt-3 border-t">
                 <span className="text-muted-foreground">Rendimento com Proventos:</span>
-                <span className={`font-medium ${(rentabilidade.rentabilidade_com_proventos || 0) >= 0 ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                  R$ {(rentabilidade.rentabilidade_com_proventos || 0).toLocaleString('pt-BR', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                    signDisplay: 'exceptZero'
-                  })}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className={`font-medium ${isRendimentoComProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                    R$ {(rentabilidade.rentabilidade_com_proventos || 0).toLocaleString('pt-BR', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                      signDisplay: 'exceptZero'
+                    })}
+                  </span>
+                  <span className={`text-sm ${isRendimentoComProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                    ({rendimentoComProventosPercent.toFixed(2)}%)
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="flex flex-col justify-center items-center space-y-4">
-              <div className="w-32 h-32 rounded-full border-8 flex items-center justify-center relative">
-                <div className="text-center">
-                  <p className={`text-2xl font-bold ${isPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                    {rendimentoPercent.toFixed(2)}%
-                  </p>
-                  <p className="text-xs text-muted-foreground">sem proventos</p>
+            <div className="flex flex-col justify-center items-center space-y-8">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${isRendimentoSemProventosPositive ? 'bg-stock-positive' : 'bg-stock-negative'}`}></div>
+                  <span className="text-sm">Rendimento sem proventos</span>
                 </div>
+                <span className={`text-xl font-bold ${isRendimentoSemProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                  {rendimentoSemProventosPercent.toFixed(2)}%
+                </span>
               </div>
-              <div className="w-32 h-32 rounded-full border-8 flex items-center justify-center border-amber-500">
-                <div className="text-center">
-                  <p className={`text-2xl font-bold ${(rentabilidade.rentabilidade_com_proventos || 0) >= 0 ? 'text-stock-positive' : 'text-stock-negative'}`}>
-                    {rentabilidade.total_investido && rentabilidade.total_investido > 0
-                      ? ((rentabilidade.rentabilidade_com_proventos || 0) / rentabilidade.total_investido * 100).toFixed(2)
-                      : '0.00'}%
-                  </p>
-                  <p className="text-xs text-muted-foreground">com proventos</p>
+              
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${isRendimentoComProventosPositive ? 'bg-stock-positive' : 'bg-stock-negative'}`}></div>
+                  <span className="text-sm">Rendimento com proventos</span>
                 </div>
+                <span className={`text-xl font-bold ${isRendimentoComProventosPositive ? 'text-stock-positive' : 'text-stock-negative'}`}>
+                  {rendimentoComProventosPercent.toFixed(2)}%
+                </span>
               </div>
             </div>
           </div>

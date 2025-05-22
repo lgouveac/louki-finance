@@ -140,6 +140,19 @@ export type Database = {
       }
     }
     Views: {
+      anomalias_corrigidas_preco_medio: {
+        Row: {
+          codigo: string | null
+          delta_qtd: number | null
+          preco_medio_corrigido: number | null
+          preco_medio_original: number | null
+          qtd_atual: number | null
+          qtd_comprada: number | null
+          sem_evento_registrado: boolean | null
+          valor_investido: number | null
+        }
+        Relationships: []
+      }
       carteira_consolidada: {
         Row: {
           codigo: string | null
