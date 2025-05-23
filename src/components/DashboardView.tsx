@@ -57,10 +57,12 @@ export function DashboardView() {
     total_atual: 0,
     total_investido: 0,
     rentabilidade_com_proventos: 0,
-    total_proventos: 0
+    total_proventos: 0,
+    rentabilidade_sem_proventos_perc: 0,
+    rentabilidade_com_proventos_perc: 0
   };
   
-  // Use the rentabilidade_sem_proventos_perc and rentabilidade_com_proventos_perc directly from the database
+  // Access percentage values directly from the rentabilidade view
   const rendimentoSemProventosPercent = rentabilidade.rentabilidade_sem_proventos_perc || 0;
   const rendimentoComProventosPercent = rentabilidade.rentabilidade_com_proventos_perc || 0;
 
