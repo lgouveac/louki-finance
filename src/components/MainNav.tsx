@@ -1,7 +1,7 @@
 
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { LayoutDashboardIcon, WalletIcon } from "lucide-react";
+import { LayoutDashboardIcon, WalletIcon, BarChartIcon } from "lucide-react";
 
 export function MainNav() {
   const location = useLocation();
@@ -17,6 +17,11 @@ export function MainNav() {
       href: "/carteira",
       icon: WalletIcon,
     },
+    {
+      title: "Alteração PM",
+      href: "/alteracao-pm",
+      icon: BarChartIcon,
+    }
   ];
   
   return (

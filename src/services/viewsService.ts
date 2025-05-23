@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { CarteiraAtual, ProventosRecebidos, DashboardData, Rentabilidade } from "@/types/stock";
+import { CarteiraAtual, ProventosRecebidos, DashboardData, Rentabilidade, AnomaliaCorrigida } from "@/types/stock";
 
 export const getCarteiraAtual = async (): Promise<CarteiraAtual[]> => {
   try {
@@ -68,8 +68,27 @@ export const getRentabilidade = async (): Promise<Rentabilidade[]> => {
     }
     
     return data as Rentabilidade[] || [];
-  } catch (err) {
+  }
+  catch (err) {
     console.error('Unexpected error in getRentabilidade:', err);
+    return [];
+  }
+};
+
+export const getAnomaliasCorrigidas = async (): Promise<AnomaliaCorrigida[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('anomalias_corrigidas_preco_medio')
+      .select('*');
+    
+    if (error) {
+      console.error('Error fetching anomalias_corrigidas_preco_medio view:', error);
+      throw error;
+    }
+    
+    return data as AnomaliaCorrigida[] || [];
+  } catch (err) {
+    console.error('Unexpected error in getAnomaliasCorrigidas:', err);
     return [];
   }
 };

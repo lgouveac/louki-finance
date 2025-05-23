@@ -1,3 +1,4 @@
+
 export interface Stock {
   symbol: string;
   name: string;
@@ -86,4 +87,16 @@ export interface Rentabilidade {
   total_investido: number | null;
   rentabilidade_com_proventos: number | null;
   total_proventos: number | null;
+}
+
+// Interface for anomalias_corrigidas_preco_medio view
+export interface AnomaliaCorrigida {
+  codigo: string | null;
+  qtd_atual: number | null;
+  qtd_comprada: number | null;
+  delta_qtd: number | null;
+  preco_medio_original: number | null;
+  preco_medio_corrigido: number | null;
+  valor_investido: number | null;
+  sem_evento_registrado: boolean | null;
 }

@@ -24,6 +24,27 @@ export type Database = {
         }
         Relationships: []
       }
+      cotacao_atual: {
+        Row: {
+          codigo: string | null
+          cotacao_atual: number | null
+          created_at: string
+          id: number
+        }
+        Insert: {
+          codigo?: string | null
+          cotacao_atual?: number | null
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          codigo?: string | null
+          cotacao_atual?: number | null
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
       negociacoes: {
         Row: {
           Codigo: string | null
