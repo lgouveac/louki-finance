@@ -79,13 +79,11 @@ export interface DashboardData {
   valor_total: number | null;
 }
 
-// Interface for rentabilidade view
+// Interface for rentabilidade view - updated to match exact column names in the database
 export interface Rentabilidade {
   rentabilidade_sem_proventos: number | null;
   total_atual: number | null;
   total_investido: number | null;
   rentabilidade_com_proventos: number | null;
   total_proventos: number | null;
-  rentabilidade_sem_proventos_perc: number | null;
-  rentabilidade_com_proventos_perc: number | null;
 }

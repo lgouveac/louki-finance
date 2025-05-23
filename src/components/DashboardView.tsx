@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardData, getRentabilidade } from "@/services/viewsService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -57,14 +56,12 @@ export function DashboardView() {
     total_atual: 0,
     total_investido: 0,
     rentabilidade_com_proventos: 0,
-    total_proventos: 0,
-    rentabilidade_sem_proventos_perc: 0,
-    rentabilidade_com_proventos_perc: 0
+    total_proventos: 0
   };
   
-  // Access percentage values directly from the rentabilidade view
-  const rendimentoSemProventosPercent = rentabilidade.rentabilidade_sem_proventos_perc || 0;
-  const rendimentoComProventosPercent = rentabilidade.rentabilidade_com_proventos_perc || 0;
+  // Use the correct field names from the rentabilidade view
+  const rendimentoSemProventosPercent = rentabilidade.rentabilidade_sem_proventos || 0;
+  const rendimentoComProventosPercent = rentabilidade.rentabilidade_com_proventos || 0;
 
   // Check if rendimentos are positive or negative
   const isRendimentoSemProventosPositive = rendimentoSemProventosPercent >= 0;
