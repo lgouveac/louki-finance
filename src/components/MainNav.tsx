@@ -38,7 +38,7 @@ export function MainNav() {
             className={cn(
               "flex items-center text-sm font-medium transition-colors hover:text-primary gap-1.5",
               location.pathname === item.href
-                ? "text-foreground"
+                ? "text-primary"
                 : "text-muted-foreground"
             )}
           >
@@ -66,7 +66,7 @@ export function MainNav() {
                   className={cn(
                     "flex items-center text-base py-2 px-3 rounded-md font-medium transition-colors hover:bg-accent",
                     location.pathname === item.href
-                      ? "bg-accent/50 text-foreground"
+                      ? "bg-accent/50 text-primary"
                       : "text-muted-foreground"
                   )}
                   onClick={() => setOpen(false)}

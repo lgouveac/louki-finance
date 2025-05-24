@@ -26,9 +26,9 @@ export function StockHeader({
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <Card className="shadow-md border-border/40">
+        <Card className="shadow-md border-border/40 bg-card">
           <CardContent className="p-4 flex items-center gap-3">
-            <CoinsIcon className="h-10 w-10 text-blue-400 p-2 bg-blue-400/10 rounded-full flex-shrink-0" />
+            <CoinsIcon className="h-10 w-10 text-primary p-2 bg-primary/10 rounded-full flex-shrink-0" />
             <div className="overflow-hidden">
               <p className="text-muted-foreground text-sm">Valor Total</p>
               <p className="text-xl font-bold truncate">
@@ -38,7 +38,7 @@ export function StockHeader({
           </CardContent>
         </Card>
 
-        <Card className="shadow-md border-border/40">
+        <Card className="shadow-md border-border/40 bg-card">
           <CardContent className="p-4 flex items-center gap-3">
             <CoinsIcon className="h-10 w-10 text-amber-400 p-2 bg-amber-400/10 rounded-full flex-shrink-0" />
             <div className="overflow-hidden">
@@ -50,7 +50,7 @@ export function StockHeader({
           </CardContent>
         </Card>
 
-        <Card className="shadow-md border-border/40">
+        <Card className="shadow-md border-border/40 bg-card">
           <CardContent className="p-4 flex items-center gap-3">
             {isPositive ? (
               <TrendingUpIcon className="h-10 w-10 text-stock-positive p-2 bg-stock-positive/10 rounded-full flex-shrink-0" />
@@ -66,7 +66,7 @@ export function StockHeader({
           </CardContent>
         </Card>
 
-        <Card className="shadow-md border-border/40">
+        <Card className="shadow-md border-border/40 bg-card">
           <CardContent className="p-4 flex items-center gap-3">
             {isPositive ? (
               <TrendingUpIcon className="h-10 w-10 text-stock-positive p-2 bg-stock-positive/10 rounded-full flex-shrink-0" />
