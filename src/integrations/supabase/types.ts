@@ -30,18 +30,21 @@ export type Database = {
           cotacao_atual: number | null
           created_at: string
           id: number
+          valorizacao: string | null
         }
         Insert: {
           codigo?: string | null
           cotacao_atual?: number | null
           created_at?: string
           id?: number
+          valorizacao?: string | null
         }
         Update: {
           codigo?: string | null
           cotacao_atual?: number | null
           created_at?: string
           id?: number
+          valorizacao?: string | null
         }
         Relationships: []
       }
