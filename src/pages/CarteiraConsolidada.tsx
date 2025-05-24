@@ -69,11 +69,11 @@ const CarteiraConsolidada = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="p-4 md:p-6">
+      <div className="p-3 md:p-6">
         <div className="mx-auto max-w-7xl">
           <StockHeader summary={summary} />
           
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-grow">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input 
@@ -84,7 +84,7 @@ const CarteiraConsolidada = () => {
               />
             </div>
             
-            <div className="w-full md:w-64">
+            <div className="w-full sm:w-64 sm:flex-shrink-0">
               <Select 
                 value={tipoFilter} 
                 onValueChange={setTipoFilter}
@@ -92,7 +92,7 @@ const CarteiraConsolidada = () => {
                 <SelectTrigger>
                   <SelectValue placeholder="Filtrar por tipo" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="z-50">
                   <SelectItem value="_all">Todos os tipos</SelectItem>
                   {tipoOptions.map((tipo) => (
                     <SelectItem key={tipo} value={tipo}>
@@ -109,6 +109,6 @@ const CarteiraConsolidada = () => {
       </div>
     </div>
   );
-};
+}
 
 export default CarteiraConsolidada;
