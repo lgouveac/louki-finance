@@ -1,6 +1,5 @@
-
 import { supabase } from "@/integrations/supabase/client";
-import { CarteiraAtual, ProventosRecebidos, DashboardData, Rentabilidade, AnomaliaCorrigida } from "@/types/stock";
+import { CarteiraAtual, ProventosRecebidos, DashboardData, Rentabilidade, AnomaliaCorrigida, ProventosMensais } from "@/types/stock";
 
 export const getCarteiraAtual = async (): Promise<CarteiraAtual[]> => {
   try {
@@ -34,6 +33,24 @@ export const getProventosRecebidos = async (): Promise<ProventosRecebidos[]> => 
     return data as ProventosRecebidos[] || [];
   } catch (err) {
     console.error('Unexpected error in getProventosRecebidos:', err);
+    return [];
+  }
+};
+
+export const getProventosMensais = async (): Promise<ProventosMensais[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('proventos_recebidos_mes')
+      .select('*');
+    
+    if (error) {
+      console.error('Error fetching proventos_recebidos_mes view:', error);
+      throw error;
+    }
+    
+    return data as ProventosMensais[] || [];
+  } catch (err) {
+    console.error('Unexpected error in getProventosMensais:', err);
     return [];
   }
 };

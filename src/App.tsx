@@ -9,6 +9,7 @@ import { usePWA } from "@/hooks/usePWA";
 import Index from "./pages/Index";
 import CarteiraConsolidada from "./pages/CarteiraConsolidada";
 import AlteracaoPM from "./pages/AlteracaoPM";
+import Dividendos from "./pages/Dividendos";
 import NotFound from "./pages/NotFound";
 import { StrictMode } from "react";
 
@@ -28,6 +29,7 @@ const AppContent = () => {
           <Route path="/" element={<Index />} />
           <Route path="/carteira" element={<CarteiraConsolidada />} />
           <Route path="/alteracao-pm" element={<AlteracaoPM />} />
+          <Route path="/dividendos" element={<Dividendos />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

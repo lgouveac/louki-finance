@@ -1,4 +1,3 @@
-
 export interface Stock {
   symbol: string;
   name: string;
@@ -71,6 +70,12 @@ export interface ProventosRecebidos {
   Quantidade: number | null;
   tipo: string | null;
   valor: number | null;
+}
+
+// Interface for proventos_recebidos_mes view
+export interface ProventosMensais {
+  mes_ano: string | null;
+  valor_total_mensal: number | null;
 }
 
 // Interface for dashboard view

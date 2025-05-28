@@ -1,7 +1,6 @@
-
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { LayoutDashboardIcon, WalletIcon, BarChartIcon, Menu } from "lucide-react";
+import { LayoutDashboardIcon, WalletIcon, BarChartIcon, CoinsIcon, Menu } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -24,6 +23,11 @@ export function MainNav() {
       title: "Alteração PM",
       href: "/alteracao-pm",
       icon: BarChartIcon,
+    },
+    {
+      title: "Dividendos",
+      href: "/dividendos",
+      icon: CoinsIcon,
     }
   ];
   

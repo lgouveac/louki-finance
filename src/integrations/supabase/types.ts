@@ -24,6 +24,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ativos_manuais: {
+        Row: {
+          ativo: boolean | null
+          codigo: string
+          data_atualizacao: string | null
+          id: number
+          preco_medio: number
+          proventos: number | null
+          quantidade: number
+          tipo: string
+          valor_atual: number
+        }
+        Insert: {
+          ativo?: boolean | null
+          codigo: string
+          data_atualizacao?: string | null
+          id?: number
+          preco_medio: number
+          proventos?: number | null
+          quantidade: number
+          tipo: string
+          valor_atual: number
+        }
+        Update: {
+          ativo?: boolean | null
+          codigo?: string
+          data_atualizacao?: string | null
+          id?: number
+          preco_medio?: number
+          proventos?: number | null
+          quantidade?: number
+          tipo?: string
+          valor_atual?: number
+        }
+        Relationships: []
+      }
       cotacao_atual: {
         Row: {
           codigo: string | null
@@ -177,7 +213,34 @@ export type Database = {
         }
         Relationships: []
       }
+      ativos_vendidos: {
+        Row: {
+          codigo: string | null
+          lucro_prejuizo: number | null
+          preco_medio_compra: number | null
+          preco_venda: number | null
+          proventos_recebidos: number | null
+          rentabilidade_com_proventos: number | null
+          rentabilidade_sem_proventos: number | null
+        }
+        Relationships: []
+      }
       carteira_consolidada: {
+        Row: {
+          codigo: string | null
+          preco_atual: number | null
+          preco_medio: number | null
+          proventos_recebidos: number | null
+          quantidade_total: number | null
+          rentabilidade_com_proventos_perc: number | null
+          rentabilidade_perc: number | null
+          Tipo: string | null
+          valor_atual: number | null
+          valor_investido: number | null
+        }
+        Relationships: []
+      }
+      carteira_consolidada_2: {
         Row: {
           codigo: string | null
           preco_atual: number | null
@@ -224,6 +287,13 @@ export type Database = {
         }
         Relationships: []
       }
+      proventos_recebidos_mes: {
+        Row: {
+          mes_ano: string | null
+          valor_total_mensal: number | null
+        }
+        Relationships: []
+      }
       rentabilidade: {
         Row: {
           rentabilidade_com_proventos: number | null
@@ -234,9 +304,30 @@ export type Database = {
         }
         Relationships: []
       }
+      rentabilidade_2: {
+        Row: {
+          dividend_yield: number | null
+          rentabilidade_com_proventos: number | null
+          rentabilidade_sem_proventos: number | null
+          total_atual: number | null
+          total_investido: number | null
+          total_proventos: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      adicionar_ativo_manual: {
+        Args: {
+          p_codigo: string
+          p_tipo: string
+          p_quantidade: number
+          p_preco_medio: number
+          p_valor_atual: number
+          p_proventos?: number
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
