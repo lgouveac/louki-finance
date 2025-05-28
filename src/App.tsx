@@ -1,4 +1,5 @@
 
+import React, { StrictMode } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,7 +12,6 @@ import CarteiraConsolidada from "./pages/CarteiraConsolidada";
 import AlteracaoPM from "./pages/AlteracaoPM";
 import Dividendos from "./pages/Dividendos";
 import NotFound from "./pages/NotFound";
-import { StrictMode } from "react";
 
 // Create a client outside of the render function
 const queryClient = new QueryClient();
