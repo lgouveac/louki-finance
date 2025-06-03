@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import CarteiraConsolidada from "./pages/CarteiraConsolidada";
 import AlteracaoPM from "./pages/AlteracaoPM";
 import Dividendos from "./pages/Dividendos";
+import Importacao from "./pages/Importacao";
 import NotFound from "./pages/NotFound";
 
 // Create a client outside of the render function
@@ -30,6 +31,7 @@ const AppContent = () => {
           <Route path="/carteira" element={<CarteiraConsolidada />} />
           <Route path="/alteracao-pm" element={<AlteracaoPM />} />
           <Route path="/dividendos" element={<Dividendos />} />
+          <Route path="/importacao" element={<Importacao />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

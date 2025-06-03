@@ -1,6 +1,7 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { LayoutDashboardIcon, WalletIcon, BarChartIcon, CoinsIcon, Menu } from "lucide-react";
+import { LayoutDashboardIcon, WalletIcon, BarChartIcon, CoinsIcon, UploadIcon, Menu } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -28,6 +29,11 @@ export function MainNav() {
       title: "Dividendos",
       href: "/dividendos",
       icon: CoinsIcon,
+    },
+    {
+      title: "Importação",
+      href: "/importacao",
+      icon: UploadIcon,
     }
   ];
   
