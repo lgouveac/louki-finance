@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -27,8 +28,23 @@ export function ProventosMensaisView({ data, isLoading }: ProventosMensaisViewPr
     return data.filter(item => {
       if (!item.mes_ano) return false;
       
-      // Parse mes_ano (formato esperado: "MM/YYYY" ou "MM-YYYY")
-      const [mes, ano] = item.mes_ano.split(/[-/]/).map(Number);
+      // Parse mes_ano corretamente baseado no formato
+      let ano: number, mes: number;
+      
+      if (item.mes_ano.includes('-')) {
+        // Formato YYYY-MM (como vem do banco)
+        const [anoStr, mesStr] = item.mes_ano.split('-');
+        ano = parseInt(anoStr);
+        mes = parseInt(mesStr);
+      } else if (item.mes_ano.includes('/')) {
+        // Formato MM/YYYY 
+        const [mesStr, anoStr] = item.mes_ano.split('/');
+        mes = parseInt(mesStr);
+        ano = parseInt(anoStr);
+      } else {
+        return false;
+      }
+      
       const itemDate = new Date(ano, mes - 1, 1);
       
       // Se dateFrom está definido, verificar se o item é >= dateFrom (primeiro dia do mês selecionado)
