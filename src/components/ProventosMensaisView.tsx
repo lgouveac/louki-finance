@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -32,12 +31,21 @@ export function ProventosMensaisView({ data, isLoading }: ProventosMensaisViewPr
       const [mes, ano] = item.mes_ano.split(/[-/]/).map(Number);
       const itemDate = new Date(ano, mes - 1, 1);
       
-      if (dateFrom && itemDate < new Date(dateFrom.getFullYear(), dateFrom.getMonth(), 1)) {
-        return false;
+      // Se dateFrom está definido, verificar se o item é >= dateFrom (primeiro dia do mês selecionado)
+      if (dateFrom) {
+        const fromDate = new Date(dateFrom.getFullYear(), dateFrom.getMonth(), 1);
+        if (itemDate < fromDate) {
+          return false;
+        }
       }
       
-      if (dateTo && itemDate > new Date(dateTo.getFullYear(), dateTo.getMonth(), 1)) {
-        return false;
+      // Se dateTo está definido, verificar se o item é <= dateTo (último dia do mês selecionado)
+      if (dateTo) {
+        const toDate = new Date(dateTo.getFullYear(), dateTo.getMonth() + 1, 0); // último dia do mês
+        const itemEndDate = new Date(ano, mes, 0); // último dia do mês do item
+        if (itemEndDate > toDate) {
+          return false;
+        }
       }
       
       return true;
@@ -65,7 +73,7 @@ export function ProventosMensaisView({ data, isLoading }: ProventosMensaisViewPr
 
   return (
     <div className="space-y-6">
-      <ProventosDashboard data={data} isLoading={isLoading} />
+      <ProventosDashboard data={filteredData} isLoading={isLoading} />
       
       <div className="flex flex-wrap gap-4 items-center">
         <div className="flex items-center gap-2">

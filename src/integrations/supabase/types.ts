@@ -34,7 +34,7 @@ export type Database = {
           proventos: number | null
           quantidade: number
           tipo: string
-          valor_atual: number
+          valor_atual: number | null
         }
         Insert: {
           ativo?: boolean | null
@@ -45,7 +45,7 @@ export type Database = {
           proventos?: number | null
           quantidade: number
           tipo: string
-          valor_atual: number
+          valor_atual?: number | null
         }
         Update: {
           ativo?: boolean | null
@@ -56,7 +56,7 @@ export type Database = {
           proventos?: number | null
           quantidade?: number
           tipo?: string
-          valor_atual?: number
+          valor_atual?: number | null
         }
         Relationships: []
       }
@@ -240,21 +240,6 @@ export type Database = {
         }
         Relationships: []
       }
-      carteira_consolidada_2: {
-        Row: {
-          codigo: string | null
-          preco_atual: number | null
-          preco_medio: number | null
-          proventos_recebidos: number | null
-          quantidade_total: number | null
-          rentabilidade_com_proventos_perc: number | null
-          rentabilidade_perc: number | null
-          Tipo: string | null
-          valor_atual: number | null
-          valor_investido: number | null
-        }
-        Relationships: []
-      }
       dashboard: {
         Row: {
           percentual: number | null
@@ -304,14 +289,13 @@ export type Database = {
         }
         Relationships: []
       }
-      rentabilidade_2: {
+      view_dy_anual: {
         Row: {
-          dividend_yield: number | null
-          rentabilidade_com_proventos: number | null
-          rentabilidade_sem_proventos: number | null
-          total_atual: number | null
-          total_investido: number | null
+          ano: number | null
+          codigo: string | null
+          dy: number | null
           total_proventos: number | null
+          valor_investido_acumulado: number | null
         }
         Relationships: []
       }
