@@ -13,7 +13,12 @@ export function ImportacaoView() {
   const [uploadStatus, setUploadStatus] = useState<{ [key: string]: string }>({});
   const { toast } = useToast();
 
-  const webhookUrl = "https://n8n.sof.to/webhook-test/0f7663d6-f5a2-4471-9136-18f2c6303fc8";
+  // URLs específicas para cada tipo de upload
+  const webhookUrls = {
+    "proventos": "https://n8n.sof.to/webhook/0f7663d6-f5a2-4471-9136-18f2c6303fc8",
+    "posicao-atualizada": "https://n8n.sof.to/webhook/0f7663d6-f5a2-4471-9136-18f2c6303fc8",
+    "outros": "https://n8n.sof.to/webhook/0f7663d6-f5a2-4471-9136-18f2c6303fc8" // usando o mesmo webhook por padrão
+  };
 
   const validateWebhookUrl = async (url: string): Promise<boolean> => {
     try {
@@ -45,6 +50,17 @@ export function ImportacaoView() {
       type: file.type,
       uploadType: type
     });
+
+    const webhookUrl = webhookUrls[type as keyof typeof webhookUrls];
+    if (!webhookUrl) {
+      console.error("❌ URL do webhook não encontrada para o tipo:", type);
+      toast({
+        title: "Erro",
+        description: `URL do webhook não configurada para o tipo: ${type}`,
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsUploading(prev => ({ ...prev, [type]: true }));
     setUploadStatus(prev => ({ ...prev, [type]: "Preparando upload..." }));
@@ -257,13 +273,25 @@ export function ImportacaoView() {
 
       <Card>
         <CardHeader>
+          <CardTitle>Configuração dos Webhooks</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="text-sm text-muted-foreground space-y-2">
+            <p><strong>Proventos:</strong> {webhookUrls.proventos}</p>
+            <p><strong>Posição Atualizada:</strong> {webhookUrls["posicao-atualizada"]}</p>
+            <p><strong>Outros:</strong> {webhookUrls.outros}</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>Instruções e Troubleshooting</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-sm text-muted-foreground space-y-2">
             <p><strong>Formatos aceitos:</strong> CSV, XLS, XLSX</p>
             <p><strong>Tamanho máximo:</strong> 10MB por arquivo</p>
-            <p><strong>Webhook URL:</strong> {webhookUrl}</p>
             <p><strong>Processamento:</strong> Os arquivos serão processados automaticamente após o upload</p>
             <p><strong>Debug:</strong> Abra o console do navegador (F12) para ver logs detalhados</p>
             <p><strong>Problemas comuns:</strong></p>
