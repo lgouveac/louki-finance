@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -74,22 +73,26 @@ export function ImportacaoView() {
 
       setUploadStatus(prev => ({ ...prev, [type]: "Enviando arquivo..." }));
 
+      // Criar FormData corretamente para envio do arquivo binário
       const formData = new FormData();
-      formData.append('file', file);
+      // O n8n espera o arquivo no campo 'data' para processar como binário
+      formData.append('data', file, file.name);
       formData.append('type', type);
       formData.append('filename', file.name);
       formData.append('timestamp', new Date().toISOString());
 
-      console.log("📤 Enviando FormData:", {
+      console.log("📤 Enviando FormData com arquivo binário:", {
         webhookUrl,
         type,
         filename: file.name,
-        fileSize: file.size
+        fileSize: file.size,
+        fileType: file.type
       });
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
         body: formData,
+        // Não definir Content-Type manualmente para FormData - deixar o browser definir automaticamente com boundary
         headers: {
           'Accept': 'application/json, text/plain, */*',
           'X-Requested-With': 'XMLHttpRequest',
@@ -294,11 +297,18 @@ export function ImportacaoView() {
             <p><strong>Tamanho máximo:</strong> 10MB por arquivo</p>
             <p><strong>Processamento:</strong> Os arquivos serão processados automaticamente após o upload</p>
             <p><strong>Debug:</strong> Abra o console do navegador (F12) para ver logs detalhados</p>
+            <p><strong>Principais mudanças:</strong></p>
+            <ul className="list-disc list-inside ml-4 space-y-1">
+              <li>Arquivo agora é enviado no campo 'data' como binário</li>
+              <li>FormData configurado corretamente para multipart/form-data</li>
+              <li>Content-Type removido para permitir boundary automático</li>
+            </ul>
             <p><strong>Problemas comuns:</strong></p>
             <ul className="list-disc list-inside ml-4 space-y-1">
               <li>Erro 404: Verifique se o webhook está ativo</li>
               <li>Erro CORS: O servidor precisa permitir requisições do seu domínio</li>
               <li>Erro de rede: Verifique sua conexão com a internet</li>
+              <li>"No binary field 'data'": Agora corrigido - arquivo enviado como binário</li>
             </ul>
           </div>
         </CardContent>
