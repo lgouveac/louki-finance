@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { FileUpIcon, UploadIcon } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export function ImportacaoView() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
   const { toast } = useToast();
+  const { user, session } = useAuth();
 
   // URL do webhook para importação
   const webhookUrl = "https://n8n.sof.to/webhook/0f7663d6-f5a2-4471-9136-18f2c6303fc8";
@@ -30,6 +32,15 @@ export function ImportacaoView() {
 
   const handleFileUpload = async (file: File) => {
     if (!file) {
+      return;
+    }
+
+    if (!user || !session) {
+      toast({
+        title: "Erro",
+        description: "Você precisa estar logado para fazer upload de arquivos.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -55,6 +66,8 @@ export function ImportacaoView() {
         headers: {
           'Accept': 'application/json, text/plain, */*',
           'X-Requested-With': 'XMLHttpRequest',
+          'Authorization': `Bearer ${session.access_token}`,
+          'X-User-ID': user.id,
         },
         mode: 'cors',
         credentials: 'omit'
@@ -87,6 +100,8 @@ export function ImportacaoView() {
           errorMessage = "Erro de CORS - o servidor precisa permitir requisições do seu domínio";
         } else if (error.message.includes('404') || error.message.includes('Not Found')) {
           errorMessage = "Webhook não encontrado - verifique se a URL está correta";
+        } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+          errorMessage = "Erro de autenticação - faça login novamente";
         } else {
           errorMessage = error.message;
         }
@@ -108,6 +123,28 @@ export function ImportacaoView() {
       }, 5000);
     }
   };
+
+  // Verificar se o usuário está logado
+  if (!user) {
+    return (
+      <div className="max-w-2xl mx-auto space-y-8">
+        <div className="text-center space-y-2">
+          <h2 className="text-3xl font-bold">Importar Dados</h2>
+          <p className="text-muted-foreground">
+            Você precisa estar logado para importar arquivos
+          </p>
+        </div>
+        
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-muted-foreground">
+              Faça login para acessar a funcionalidade de importação de dados.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
@@ -205,6 +242,65 @@ export function ImportacaoView() {
                 <li>• PNG (.png)</li>
                 <li>• JPEG (.jpg, .jpeg)</li>
               </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Configuração N8N - Verificação JWT</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4 text-sm">
+            <p className="text-muted-foreground">
+              Para validar o JWT no N8N, adicione um Function node antes do processamento com este código:
+            </p>
+            
+            <div className="bg-gray-100 p-4 rounded-md overflow-x-auto">
+              <pre className="text-xs">{`// Função para verificar JWT no N8N
+const jwt = $node.req.headers.authorization?.replace('Bearer ', '');
+const userId = $node.req.headers['x-user-id'];
+
+if (!jwt || !userId) {
+  throw new Error('Token ou User ID não fornecido');
+}
+
+// Verificar JWT com Supabase
+const response = await fetch('https://neompzltxilcimodyvpd.supabase.co/auth/v1/user', {
+  method: 'GET',
+  headers: {
+    'Authorization': 'Bearer ' + jwt,
+    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lb21wemx0eGlsY2ltb2R5dnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTQ3MTEsImV4cCI6MjA2MzE5MDcxMX0.6HgkGyPdVtMlPH0ViERnXRqRNh3ufw_5nsS7fDaWaiw'
+  }
+});
+
+if (!response.ok) {
+  throw new Error('Token JWT inválido');
+}
+
+const user = await response.json();
+
+if (user.id !== userId) {
+  throw new Error('User ID não confere com o token');
+}
+
+// Retornar dados validados
+return {
+  validated_user_id: user.id,
+  user_email: user.email,
+  original_data: $json
+};`}</pre>
+            </div>
+            
+            <div className="space-y-2">
+              <h4 className="font-medium">Passos no N8N:</h4>
+              <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
+                <li>Adicione um Function node após o Webhook</li>
+                <li>Cole o código acima no Function node</li>
+                <li>Conecte o Function node ao seu processamento existente</li>
+                <li>Use `validated_user_id` nos próximos nodes para associar dados ao usuário</li>
+              </ol>
             </div>
           </div>
         </CardContent>

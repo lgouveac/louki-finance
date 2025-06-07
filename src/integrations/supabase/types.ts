@@ -13,14 +13,17 @@ export type Database = {
         Row: {
           codigo_negociacao: string
           codigo_posicao: string
+          user_id: string | null
         }
         Insert: {
           codigo_negociacao: string
           codigo_posicao: string
+          user_id?: string | null
         }
         Update: {
           codigo_negociacao?: string
           codigo_posicao?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -34,6 +37,7 @@ export type Database = {
           proventos: number | null
           quantidade: number
           tipo: string
+          user_id: string | null
           valor_atual: number | null
         }
         Insert: {
@@ -45,6 +49,7 @@ export type Database = {
           proventos?: number | null
           quantidade: number
           tipo: string
+          user_id?: string | null
           valor_atual?: number | null
         }
         Update: {
@@ -56,6 +61,7 @@ export type Database = {
           proventos?: number | null
           quantidade?: number
           tipo?: string
+          user_id?: string | null
           valor_atual?: number | null
         }
         Relationships: []
@@ -66,6 +72,7 @@ export type Database = {
           cotacao_atual: number | null
           created_at: string
           id: number
+          user_id: string | null
           valorizacao: string | null
         }
         Insert: {
@@ -73,6 +80,7 @@ export type Database = {
           cotacao_atual?: number | null
           created_at?: string
           id?: number
+          user_id?: string | null
           valorizacao?: string | null
         }
         Update: {
@@ -80,6 +88,7 @@ export type Database = {
           cotacao_atual?: number | null
           created_at?: string
           id?: number
+          user_id?: string | null
           valorizacao?: string | null
         }
         Relationships: []
@@ -96,6 +105,7 @@ export type Database = {
           Preço: number | null
           Quantidade: number | null
           "Tipo de Movimentação": string | null
+          user_id: string | null
           Valor: number | null
         }
         Insert: {
@@ -109,6 +119,7 @@ export type Database = {
           Preço?: number | null
           Quantidade?: number | null
           "Tipo de Movimentação"?: string | null
+          user_id?: string | null
           Valor?: number | null
         }
         Update: {
@@ -122,6 +133,7 @@ export type Database = {
           Preço?: number | null
           Quantidade?: number | null
           "Tipo de Movimentação"?: string | null
+          user_id?: string | null
           Valor?: number | null
         }
         Relationships: []
@@ -135,6 +147,7 @@ export type Database = {
           Quantidade: number | null
           "Quantidade Disponível": number | null
           Tipo: string | null
+          user_id: string | null
           "Valor Atualizado": number | null
         }
         Insert: {
@@ -145,6 +158,7 @@ export type Database = {
           Quantidade?: number | null
           "Quantidade Disponível"?: number | null
           Tipo?: string | null
+          user_id?: string | null
           "Valor Atualizado"?: number | null
         }
         Update: {
@@ -155,6 +169,7 @@ export type Database = {
           Quantidade?: number | null
           "Quantidade Disponível"?: number | null
           Tipo?: string | null
+          user_id?: string | null
           "Valor Atualizado"?: number | null
         }
         Relationships: []
@@ -170,6 +185,7 @@ export type Database = {
           "Preço unitário": number | null
           Produto: string | null
           Quantidade: number | null
+          user_id: string | null
           "Valor da Operação": number | null
         }
         Insert: {
@@ -182,6 +198,7 @@ export type Database = {
           "Preço unitário"?: number | null
           Produto?: string | null
           Quantidade?: number | null
+          user_id?: string | null
           "Valor da Operação"?: number | null
         }
         Update: {
@@ -194,6 +211,7 @@ export type Database = {
           "Preço unitário"?: number | null
           Produto?: string | null
           Quantidade?: number | null
+          user_id?: string | null
           "Valor da Operação"?: number | null
         }
         Relationships: []
@@ -248,6 +266,15 @@ export type Database = {
         }
         Relationships: []
       }
+      dividend_yield_anual_net_invested: {
+        Row: {
+          ano: number | null
+          capital_acumulado: number | null
+          dividend_yield_percent: number | null
+          total_dividendos: number | null
+        }
+        Relationships: []
+      }
       proventos_recebidos: {
         Row: {
           codigo: string | null
@@ -286,16 +313,6 @@ export type Database = {
           total_atual: number | null
           total_investido: number | null
           total_proventos: number | null
-        }
-        Relationships: []
-      }
-      view_dy_anual: {
-        Row: {
-          ano: number | null
-          codigo: string | null
-          dy: number | null
-          total_proventos: number | null
-          valor_investido_acumulado: number | null
         }
         Relationships: []
       }
