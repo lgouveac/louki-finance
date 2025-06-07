@@ -7,28 +7,13 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { FileUpIcon, UploadIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 export function ImportacaoView() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
   const { toast } = useToast();
   const { user, session } = useAuth();
-
-  // URL do webhook para importação
-  const webhookUrl = "https://n8n.sof.to/webhook/0f7663d6-f5a2-4471-9136-18f2c6303fc8";
-
-  const validateWebhookUrl = async (url: string): Promise<boolean> => {
-    try {
-      const response = await fetch(url, {
-        method: 'HEAD',
-        mode: 'no-cors'
-      });
-      
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
 
   const handleFileUpload = async (file: File) => {
     if (!file) {
@@ -48,37 +33,19 @@ export function ImportacaoView() {
     setUploadStatus("Enviando arquivo...");
 
     try {
-      // Validar URL do webhook primeiro
-      const isUrlValid = await validateWebhookUrl(webhookUrl);
-      if (!isUrlValid) {
-        throw new Error("URL do webhook não está respondendo");
-      }
-
-      // Criar FormData corretamente para envio do arquivo binário
+      // Criar FormData para envio do arquivo
       const formData = new FormData();
-      formData.append('data', file, file.name);
-      formData.append('filename', file.name);
-      formData.append('timestamp', new Date().toISOString());
+      formData.append('file', file, file.name);
 
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
+      // Usar a edge function do Supabase
+      const { data, error } = await supabase.functions.invoke('userid', {
         body: formData,
-        headers: {
-          'Accept': 'application/json, text/plain, */*',
-          'X-Requested-With': 'XMLHttpRequest',
-          'Authorization': `Bearer ${session.access_token}`,
-          'X-User-ID': user.id,
-        },
-        mode: 'cors',
-        credentials: 'omit'
       });
 
-      if (!response.ok) {
-        const errorText = await response.text().catch(() => 'Resposta não disponível');
-        throw new Error(`Erro ${response.status}: ${response.statusText}${errorText ? ` - ${errorText}` : ''}`);
+      if (error) {
+        throw error;
       }
 
-      const responseData = await response.text();
       setUploadStatus("Upload concluído!");
       
       toast({
@@ -94,17 +61,7 @@ export function ImportacaoView() {
       let errorMessage = "Erro desconhecido ao enviar arquivo";
       
       if (error instanceof Error) {
-        if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
-          errorMessage = "Erro de rede - verifique sua conexão ou se o webhook está ativo";
-        } else if (error.message.includes('CORS')) {
-          errorMessage = "Erro de CORS - o servidor precisa permitir requisições do seu domínio";
-        } else if (error.message.includes('404') || error.message.includes('Not Found')) {
-          errorMessage = "Webhook não encontrado - verifique se a URL está correta";
-        } else if (error.message.includes('401') || error.message.includes('Unauthorized')) {
-          errorMessage = "Erro de autenticação - faça login novamente";
-        } else {
-          errorMessage = error.message;
-        }
+        errorMessage = error.message;
       }
 
       setUploadStatus(`Erro: ${errorMessage}`);
@@ -249,58 +206,22 @@ export function ImportacaoView() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Configuração N8N - Verificação JWT</CardTitle>
+          <CardTitle className="text-lg">Edge Function - Upload de Arquivos</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4 text-sm">
             <p className="text-muted-foreground">
-              Para validar o JWT no N8N, adicione um Function node antes do processamento com este código:
+              Os arquivos são enviados para a edge function "userid" do Supabase que processa automaticamente os dados enviados.
             </p>
             
-            <div className="bg-gray-100 p-4 rounded-md overflow-x-auto">
-              <pre className="text-xs">{`// Função para verificar JWT no N8N
-const jwt = $node.req.headers.authorization?.replace('Bearer ', '');
-const userId = $node.req.headers['x-user-id'];
-
-if (!jwt || !userId) {
-  throw new Error('Token ou User ID não fornecido');
-}
-
-// Verificar JWT com Supabase
-const response = await fetch('https://neompzltxilcimodyvpd.supabase.co/auth/v1/user', {
-  method: 'GET',
-  headers: {
-    'Authorization': 'Bearer ' + jwt,
-    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lb21wemx0eGlsY2ltb2R5dnBkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc2MTQ3MTEsImV4cCI6MjA2MzE5MDcxMX0.6HgkGyPdVtMlPH0ViERnXRqRNh3ufw_5nsS7fDaWaiw'
-  }
-});
-
-if (!response.ok) {
-  throw new Error('Token JWT inválido');
-}
-
-const user = await response.json();
-
-if (user.id !== userId) {
-  throw new Error('User ID não confere com o token');
-}
-
-// Retornar dados validados
-return {
-  validated_user_id: user.id,
-  user_email: user.email,
-  original_data: $json
-};`}</pre>
-            </div>
-            
             <div className="space-y-2">
-              <h4 className="font-medium">Passos no N8N:</h4>
-              <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
-                <li>Adicione um Function node após o Webhook</li>
-                <li>Cole o código acima no Function node</li>
-                <li>Conecte o Function node ao seu processamento existente</li>
-                <li>Use `validated_user_id` nos próximos nodes para associar dados ao usuário</li>
-              </ol>
+              <h4 className="font-medium">Funcionalidades:</h4>
+              <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                <li>Autenticação automática via JWT</li>
+                <li>Associação do arquivo ao usuário logado</li>
+                <li>Processamento seguro dos dados</li>
+                <li>Validação de tipos de arquivo</li>
+              </ul>
             </div>
           </div>
         </CardContent>
