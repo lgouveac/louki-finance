@@ -93,6 +93,69 @@ export type Database = {
         }
         Relationships: []
       }
+      economic_signal_impacts: {
+        Row: {
+          acao_recomendada: string
+          categoria_afetada: string
+          id: string
+          justificativa: string | null
+          signal_id: string | null
+        }
+        Insert: {
+          acao_recomendada: string
+          categoria_afetada: string
+          id?: string
+          justificativa?: string | null
+          signal_id?: string | null
+        }
+        Update: {
+          acao_recomendada?: string
+          categoria_afetada?: string
+          id?: string
+          justificativa?: string | null
+          signal_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "economic_signal_impacts_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "economic_recommendations"
+            referencedColumns: ["sinal_id"]
+          },
+          {
+            foreignKeyName: "economic_signal_impacts_signal_id_fkey"
+            columns: ["signal_id"]
+            isOneToOne: false
+            referencedRelation: "economic_signals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      economic_signals: {
+        Row: {
+          criado_por: string | null
+          data: string | null
+          descricao: string | null
+          id: string
+          nome_evento: string
+        }
+        Insert: {
+          criado_por?: string | null
+          data?: string | null
+          descricao?: string | null
+          id?: string
+          nome_evento: string
+        }
+        Update: {
+          criado_por?: string | null
+          data?: string | null
+          descricao?: string | null
+          id?: string
+          nome_evento?: string
+        }
+        Relationships: []
+      }
       negociacoes: {
         Row: {
           Codigo: string | null
@@ -272,6 +335,19 @@ export type Database = {
           capital_acumulado: number | null
           dividend_yield_percent: number | null
           total_dividendos: number | null
+        }
+        Relationships: []
+      }
+      economic_recommendations: {
+        Row: {
+          acao_recomendada: string | null
+          categoria_afetada: string | null
+          data: string | null
+          descricao_evento: string | null
+          impacto_id: string | null
+          justificativa: string | null
+          nome_evento: string | null
+          sinal_id: string | null
         }
         Relationships: []
       }

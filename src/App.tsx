@@ -15,6 +15,7 @@ import AlteracaoPM from "./pages/AlteracaoPM";
 import Dividendos from "./pages/Dividendos";
 import Importacao from "./pages/Importacao";
 import AtivosManuais from "./pages/AtivosManuais";
+import AnaliseEconomica from "./pages/AnaliseEconomica";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -60,6 +61,11 @@ const AppContent = () => {
           <Route path="/ativos-manuais" element={
             <ProtectedRoute>
               <AtivosManuais />
+            </ProtectedRoute>
+          } />
+          <Route path="/analise-economica" element={
+            <ProtectedRoute>
+              <AnaliseEconomica />
             </ProtectedRoute>
           } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
