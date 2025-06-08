@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { FileUpIcon, UploadIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -33,19 +32,23 @@ export function ImportacaoView() {
     setUploadStatus("Enviando arquivo...");
 
     try {
-      // Criar FormData para envio do arquivo
+      console.log('Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type);
+
+      // Preparar FormData para o arquivo
       const formData = new FormData();
       formData.append('file', file, file.name);
 
-      // Usar a edge function do Supabase
+      // Chamar a edge function do Supabase
       const { data, error } = await supabase.functions.invoke('userid', {
         body: formData,
       });
 
       if (error) {
+        console.error('Supabase function error:', error);
         throw error;
       }
 
+      console.log('Upload successful:', data);
       setUploadStatus("Upload concluído!");
       
       toast({
@@ -58,6 +61,8 @@ export function ImportacaoView() {
       if (input) input.value = '';
 
     } catch (error) {
+      console.error('Upload error:', error);
+      
       let errorMessage = "Erro desconhecido ao enviar arquivo";
       
       if (error instanceof Error) {
