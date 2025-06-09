@@ -55,24 +55,24 @@ export function MainNav() {
           <span className="sr-only">Menu</span>
         </button>
       </DrawerTrigger>
-      <DrawerContent className="h-[80vh]">
+      <DrawerContent className="h-screen max-h-screen">
         <DrawerHeader>
           <DrawerTitle>Menu de Navegação</DrawerTitle>
         </DrawerHeader>
-        <nav className="flex flex-col space-y-2 p-4">
+        <nav className="flex flex-col space-y-2 p-4 flex-1 overflow-y-auto">
           {navItems.map((item) => (
             <Link
               key={item.href}
               to={item.href}
               className={cn(
-                "flex items-center text-base py-3 px-4 rounded-md font-medium transition-colors hover:bg-accent",
+                "flex items-center text-base py-4 px-4 rounded-md font-medium transition-colors hover:bg-accent min-h-[48px]",
                 location.pathname === item.href
                   ? "bg-accent/50 text-primary"
                   : "text-muted-foreground"
               )}
               onClick={() => setOpen(false)}
             >
-              <item.icon className="h-5 w-5 mr-3" />
+              <item.icon className="h-6 w-6 mr-4" />
               {item.title}
             </Link>
           ))}

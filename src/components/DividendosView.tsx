@@ -26,10 +26,16 @@ export function DividendosView() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="mensais" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="mensais">Proventos Mensais</TabsTrigger>
-          <TabsTrigger value="detalhados">Proventos Detalhados</TabsTrigger>
-          <TabsTrigger value="dy-anual">DY por Ano</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
+          <TabsTrigger value="mensais" className="text-xs md:text-sm px-2 py-2">
+            Proventos Mensais
+          </TabsTrigger>
+          <TabsTrigger value="detalhados" className="text-xs md:text-sm px-2 py-2">
+            Proventos Detalhados
+          </TabsTrigger>
+          <TabsTrigger value="dy-anual" className="text-xs md:text-sm px-2 py-2">
+            DY por Ano
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="mensais" className="space-y-4">

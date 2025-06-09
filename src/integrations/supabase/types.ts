@@ -34,11 +34,13 @@ export type Database = {
           data_atualizacao: string | null
           id: number
           preco_medio: number
+          preco_medio_dolar: number | null
           proventos: number | null
           quantidade: number
           tipo: string
           user_id: string | null
           valor_atual: number | null
+          valor_dolar: number | null
         }
         Insert: {
           ativo?: boolean | null
@@ -46,11 +48,13 @@ export type Database = {
           data_atualizacao?: string | null
           id?: number
           preco_medio: number
+          preco_medio_dolar?: number | null
           proventos?: number | null
           quantidade: number
           tipo: string
           user_id?: string | null
           valor_atual?: number | null
+          valor_dolar?: number | null
         }
         Update: {
           ativo?: boolean | null
@@ -58,11 +62,13 @@ export type Database = {
           data_atualizacao?: string | null
           id?: number
           preco_medio?: number
+          preco_medio_dolar?: number | null
           proventos?: number | null
           quantidade?: number
           tipo?: string
           user_id?: string | null
           valor_atual?: number | null
+          valor_dolar?: number | null
         }
         Relationships: []
       }
