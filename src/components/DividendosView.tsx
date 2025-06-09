@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProventosMensaisView } from "@/components/ProventosMensaisView";
 import { ProventosDetalhados } from "@/components/ProventosDetalhados";
-import { getProventosMensais, getProventosRecebidos } from "@/services/viewsService";
+import { ProventosPorAnoView } from "@/components/ProventosPorAnoView";
+import { getProventosMensais, getProventosRecebidos, getDividendYieldAnual } from "@/services/viewsService";
 
 export function DividendosView() {
   const { data: proventosMensais = [], isLoading: isLoadingMensais } = useQuery({
@@ -17,12 +18,18 @@ export function DividendosView() {
     queryFn: getProventosRecebidos,
   });
 
+  const { data: dividendYieldAnual = [], isLoading: isLoadingDY } = useQuery({
+    queryKey: ['dividend-yield-anual'],
+    queryFn: getDividendYieldAnual,
+  });
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="mensais" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="mensais">Proventos Mensais</TabsTrigger>
           <TabsTrigger value="detalhados">Proventos Detalhados</TabsTrigger>
+          <TabsTrigger value="dy-anual">DY por Ano</TabsTrigger>
         </TabsList>
         
         <TabsContent value="mensais" className="space-y-4">
@@ -36,6 +43,13 @@ export function DividendosView() {
           <ProventosDetalhados 
             data={proventosRecebidos} 
             isLoading={isLoadingRecebidos} 
+          />
+        </TabsContent>
+        
+        <TabsContent value="dy-anual" className="space-y-4">
+          <ProventosPorAnoView 
+            data={dividendYieldAnual} 
+            isLoading={isLoadingDY} 
           />
         </TabsContent>
       </Tabs>

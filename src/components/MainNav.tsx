@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { LayoutDashboardIcon, WalletIcon, BarChartIcon, CoinsIcon, UploadIcon, Menu, Settings, TrendingUp } from "lucide-react";
 import { useState } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
 export function MainNav() {
   const location = useLocation();
@@ -48,57 +48,36 @@ export function MainNav() {
   ];
   
   return (
-    <>
-      {/* Versão Desktop */}
-      <nav className="hidden md:flex items-center space-x-4 lg:space-x-6 mx-6">
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            to={item.href}
-            className={cn(
-              "flex items-center text-sm font-medium transition-colors hover:text-primary gap-1.5",
-              location.pathname === item.href
-                ? "text-primary"
-                : "text-muted-foreground"
-            )}
-          >
-            <item.icon className="h-4 w-4" />
-            {item.title}
-          </Link>
-        ))}
-      </nav>
-      
-      {/* Versão Mobile */}
-      <div className="md:hidden ml-auto">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <button className="p-2 rounded-md hover:bg-accent">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Menu</span>
-            </button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[80vw] max-w-[300px] bg-card">
-            <nav className="flex flex-col space-y-4 mt-8">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={cn(
-                    "flex items-center text-base py-2 px-3 rounded-md font-medium transition-colors hover:bg-accent",
-                    location.pathname === item.href
-                      ? "bg-accent/50 text-primary"
-                      : "text-muted-foreground"
-                  )}
-                  onClick={() => setOpen(false)}
-                >
-                  <item.icon className="h-5 w-5 mr-2" />
-                  {item.title}
-                </Link>
-              ))}
-            </nav>
-          </SheetContent>
-        </Sheet>
-      </div>
-    </>
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger asChild>
+        <button className="p-2 rounded-md hover:bg-accent">
+          <Menu className="h-5 w-5" />
+          <span className="sr-only">Menu</span>
+        </button>
+      </DrawerTrigger>
+      <DrawerContent className="h-[80vh]">
+        <DrawerHeader>
+          <DrawerTitle>Menu de Navegação</DrawerTitle>
+        </DrawerHeader>
+        <nav className="flex flex-col space-y-2 p-4">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={cn(
+                "flex items-center text-base py-3 px-4 rounded-md font-medium transition-colors hover:bg-accent",
+                location.pathname === item.href
+                  ? "bg-accent/50 text-primary"
+                  : "text-muted-foreground"
+              )}
+              onClick={() => setOpen(false)}
+            >
+              <item.icon className="h-5 w-5 mr-3" />
+              {item.title}
+            </Link>
+          ))}
+        </nav>
+      </DrawerContent>
+    </Drawer>
   );
 }

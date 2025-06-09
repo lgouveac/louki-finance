@@ -1,6 +1,13 @@
 import { supabase } from "@/integrations/supabase/client";
 import { CarteiraAtual, ProventosRecebidos, DashboardData, Rentabilidade, AnomaliaCorrigida, ProventosMensais } from "@/types/stock";
 
+export interface DividendYieldAnual {
+  ano: number;
+  total_dividendos: number;
+  capital_acumulado: number;
+  dividend_yield_percent: number;
+}
+
 export const getCarteiraAtual = async (): Promise<CarteiraAtual[]> => {
   try {
     const { data, error } = await supabase
@@ -106,6 +113,25 @@ export const getAnomaliasCorrigidas = async (): Promise<AnomaliaCorrigida[]> => 
     return data as AnomaliaCorrigida[] || [];
   } catch (err) {
     console.error('Unexpected error in getAnomaliasCorrigidas:', err);
+    return [];
+  }
+};
+
+export const getDividendYieldAnual = async (): Promise<DividendYieldAnual[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('dividend_yield_anual_net_invested')
+      .select('*')
+      .order('ano', { ascending: false });
+    
+    if (error) {
+      console.error('Error fetching dividend_yield_anual_net_invested view:', error);
+      throw error;
+    }
+    
+    return data as DividendYieldAnual[] || [];
+  } catch (err) {
+    console.error('Unexpected error in getDividendYieldAnual:', err);
     return [];
   }
 };

@@ -18,27 +18,28 @@ export function Header() {
           <span className="text-primary mr-2">•</span>
           Meus Investimentos
         </div>
-        <div className="flex-1 flex justify-end md:justify-start">
-          <MainNav />
-        </div>
         
-        {user && (
-          <div className="flex items-center gap-4 ml-4">
-            <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-              <User className="h-4 w-4" />
-              {user.email}
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLogout}
-              className="flex items-center gap-2"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden md:inline">Sair</span>
-            </Button>
-          </div>
-        )}
+        <div className="flex-1 flex justify-end items-center gap-4">
+          <MainNav />
+          
+          {user && (
+            <>
+              <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
+                <User className="h-4 w-4" />
+                {user.email}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden md:inline">Sair</span>
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
