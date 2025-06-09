@@ -11,14 +11,16 @@ interface ProventosPorAnoViewProps {
 }
 
 export function ProventosPorAnoView({ data, isLoading }: ProventosPorAnoViewProps) {
-  const formatCurrency = (value: number) => {
+  const formatCurrency = (value: number | null) => {
+    if (value === null || value === undefined) return 'R$ 0,00';
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
   };
 
-  const formatPercentage = (value: number) => {
+  const formatPercentage = (value: number | null) => {
+    if (value === null || value === undefined) return '0,00%';
     return `${value.toFixed(2)}%`;
   };
 
