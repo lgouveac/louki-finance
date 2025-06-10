@@ -55,7 +55,7 @@ export function MainNav() {
           <span className="sr-only">Menu</span>
         </button>
       </DrawerTrigger>
-      <DrawerContent className="h-screen max-h-screen">
+      <DrawerContent className="h-[80vh] max-h-[80vh]">
         <DrawerHeader>
           <DrawerTitle>Menu de Navegação</DrawerTitle>
         </DrawerHeader>
