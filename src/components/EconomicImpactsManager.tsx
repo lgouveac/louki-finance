@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -133,14 +132,20 @@ export function EconomicImpactsManager() {
     return signals?.find(s => s.id === signalId)?.nome_evento || '-';
   };
 
-  if (isLoading) return <div>Carregando...</div>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-gray-400">Carregando...</div>
+      </div>
+    );
+  }
 
   return (
-    <Card>
+    <Card className="glass-card border-gray-700">
       <CardHeader>
-        <CardTitle className="flex justify-between items-center">
+        <CardTitle className="flex justify-between items-center text-white">
           Impactos dos Sinais Econômicos
-          <Button onClick={() => setShowAddForm(!showAddForm)}>
+          <Button onClick={() => setShowAddForm(!showAddForm)} className="glass-button hover:bg-white/20 text-white border-white/20">
             <Plus className="h-4 w-4 mr-2" />
             Adicionar Impacto
           </Button>
@@ -148,16 +153,16 @@ export function EconomicImpactsManager() {
       </CardHeader>
       <CardContent>
         {showAddForm && (
-          <div className="mb-6 p-4 border rounded-lg space-y-4">
+          <div className="mb-6 p-4 glass-card border-gray-600 rounded-lg space-y-4">
             <div>
-              <Label htmlFor="signal_id">Sinal Econômico</Label>
+              <Label htmlFor="signal_id" className="text-gray-300">Sinal Econômico</Label>
               <Select onValueChange={(value) => setNewImpact({ ...newImpact, signal_id: value })}>
-                <SelectTrigger>
+                <SelectTrigger className="bg-gray-800/50 border-gray-600 text-white">
                   <SelectValue placeholder="Selecione um sinal econômico" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-gray-800 border-gray-600">
                   {signals?.map((signal) => (
-                    <SelectItem key={signal.id} value={signal.id}>
+                    <SelectItem key={signal.id} value={signal.id} className="text-white hover:bg-gray-700">
                       {signal.nome_evento}
                     </SelectItem>
                   ))}
@@ -165,38 +170,41 @@ export function EconomicImpactsManager() {
               </Select>
             </div>
             <div>
-              <Label htmlFor="categoria_afetada">Categoria Afetada</Label>
+              <Label htmlFor="categoria_afetada" className="text-gray-300">Categoria Afetada</Label>
               <Input
                 id="categoria_afetada"
                 value={newImpact.categoria_afetada}
                 onChange={(e) => setNewImpact({ ...newImpact, categoria_afetada: e.target.value })}
                 placeholder="Ex: Ações, Renda Fixa, Commodities"
+                className="bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-gray-400"
               />
             </div>
             <div>
-              <Label htmlFor="acao_recomendada">Ação Recomendada</Label>
+              <Label htmlFor="acao_recomendada" className="text-gray-300">Ação Recomendada</Label>
               <Input
                 id="acao_recomendada"
                 value={newImpact.acao_recomendada}
                 onChange={(e) => setNewImpact({ ...newImpact, acao_recomendada: e.target.value })}
                 placeholder="Ex: Comprar, Vender, Manter"
+                className="bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-gray-400"
               />
             </div>
             <div>
-              <Label htmlFor="justificativa">Justificativa</Label>
+              <Label htmlFor="justificativa" className="text-gray-300">Justificativa</Label>
               <Textarea
                 id="justificativa"
                 value={newImpact.justificativa}
                 onChange={(e) => setNewImpact({ ...newImpact, justificativa: e.target.value })}
                 placeholder="Justificativa para a recomendação"
+                className="bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-gray-400"
               />
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleCreate} disabled={createMutation.isPending}>
+              <Button onClick={handleCreate} disabled={createMutation.isPending} className="glass-button hover:bg-white/20 text-white border-white/20">
                 <Save className="h-4 w-4 mr-2" />
                 Salvar
               </Button>
-              <Button variant="outline" onClick={() => setShowAddForm(false)}>
+              <Button variant="outline" onClick={() => setShowAddForm(false)} className="border-gray-600 text-gray-300 hover:bg-white/10 hover:border-gray-400">
                 <X className="h-4 w-4 mr-2" />
                 Cancelar
               </Button>
@@ -204,72 +212,79 @@ export function EconomicImpactsManager() {
           </div>
         )}
 
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Sinal Econômico</TableHead>
-              <TableHead>Categoria Afetada</TableHead>
-              <TableHead>Ação Recomendada</TableHead>
-              <TableHead>Justificativa</TableHead>
-              <TableHead>Ações</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {impacts?.map((impact) => (
-              <TableRow key={impact.id}>
-                <TableCell>{getSignalName(impact.signal_id)}</TableCell>
-                <TableCell>
-                  {editingId === impact.id ? (
-                    <Input
-                      defaultValue={impact.categoria_afetada}
-                      onBlur={(e) => handleUpdate(impact.id, 'categoria_afetada', e.target.value)}
-                    />
-                  ) : (
-                    impact.categoria_afetada
-                  )}
-                </TableCell>
-                <TableCell>
-                  {editingId === impact.id ? (
-                    <Input
-                      defaultValue={impact.acao_recomendada}
-                      onBlur={(e) => handleUpdate(impact.id, 'acao_recomendada', e.target.value)}
-                    />
-                  ) : (
-                    impact.acao_recomendada
-                  )}
-                </TableCell>
-                <TableCell>
-                  {editingId === impact.id ? (
-                    <Textarea
-                      defaultValue={impact.justificativa || ""}
-                      onBlur={(e) => handleUpdate(impact.id, 'justificativa', e.target.value)}
-                    />
-                  ) : (
-                    impact.justificativa
-                  )}
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setEditingId(editingId === impact.id ? null : impact.id)}
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(impact.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
+        <div className="glass-card border-gray-700 rounded-lg overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-gray-700 hover:bg-transparent">
+                <TableHead className="text-gray-300">Sinal Econômico</TableHead>
+                <TableHead className="text-gray-300">Categoria Afetada</TableHead>
+                <TableHead className="text-gray-300">Ação Recomendada</TableHead>
+                <TableHead className="text-gray-300">Justificativa</TableHead>
+                <TableHead className="text-gray-300">Ações</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {impacts?.map((impact) => (
+                <TableRow key={impact.id} className="border-gray-700 hover:bg-white/5">
+                  <TableCell className="text-white">{getSignalName(impact.signal_id)}</TableCell>
+                  <TableCell className="text-gray-300">
+                    {editingId === impact.id ? (
+                      <Input
+                        defaultValue={impact.categoria_afetada}
+                        onBlur={(e) => handleUpdate(impact.id, 'categoria_afetada', e.target.value)}
+                        className="bg-gray-800/50 border-gray-600 text-white"
+                      />
+                    ) : (
+                      impact.categoria_afetada
+                    )}
+                  </TableCell>
+                  <TableCell className="text-gray-300">
+                    {editingId === impact.id ? (
+                      <Input
+                        defaultValue={impact.acao_recomendada}
+                        onBlur={(e) => handleUpdate(impact.id, 'acao_recomendada', e.target.value)}
+                        className="bg-gray-800/50 border-gray-600 text-white"
+                      />
+                    ) : (
+                      impact.acao_recomendada
+                    )}
+                  </TableCell>
+                  <TableCell className="text-gray-300">
+                    {editingId === impact.id ? (
+                      <Textarea
+                        defaultValue={impact.justificativa || ""}
+                        onBlur={(e) => handleUpdate(impact.id, 'justificativa', e.target.value)}
+                        className="bg-gray-800/50 border-gray-600 text-white"
+                      />
+                    ) : (
+                      impact.justificativa
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingId(editingId === impact.id ? null : impact.id)}
+                        className="border-gray-600 text-gray-300 hover:bg-white/10 hover:border-gray-400"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(impact.id)}
+                        className="bg-red-900/50 border-red-700 text-red-300 hover:bg-red-800/50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );
