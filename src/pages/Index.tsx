@@ -2,10 +2,10 @@
 import { DashboardView } from "@/components/DashboardView";
 import { Header } from "@/components/Header";
 
-// Gradiente elegante sutil para o fundo do dashboard
+// Fundo preto absoluto, apenas detalhes em degrade nos cards
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#171B24] via-[#202634] to-[#181A1F]">
+    <div className="min-h-screen bg-black">
       <Header />
       <div className="pb-10 pt-2 md:pt-4">
         <div className="mx-auto max-w-7xl px-2">
