@@ -7,31 +7,57 @@ import { EconomicRecommendationsView } from "@/components/EconomicRecommendation
 
 const AnaliseEconomica = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-dark">
       <Header />
-      <div className="p-4 md:p-6">
+      <div className="p-3 md:p-6 lg:p-8">
         <div className="mx-auto max-w-7xl">
-          <h1 className="text-2xl font-bold mb-6">Análise Econômica</h1>
+          <div className="mb-6 md:mb-8">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2">
+              Análise Econômica
+            </h1>
+            <p className="text-sm md:text-base text-gray-400">
+              Gerencie sinais econômicos, impactos e recomendações
+            </p>
+          </div>
           
-          <Tabs defaultValue="signals" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="signals">Sinais Econômicos</TabsTrigger>
-              <TabsTrigger value="impacts">Impactos</TabsTrigger>
-              <TabsTrigger value="recommendations">Recomendações</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="signals" className="mt-6">
-              <EconomicSignalsManager />
-            </TabsContent>
-            
-            <TabsContent value="impacts" className="mt-6">
-              <EconomicImpactsManager />
-            </TabsContent>
-            
-            <TabsContent value="recommendations" className="mt-6">
-              <EconomicRecommendationsView />
-            </TabsContent>
-          </Tabs>
+          <div className="glass-card rounded-xl p-4 md:p-6">
+            <Tabs defaultValue="signals" className="w-full">
+              <TabsList className="grid w-full grid-cols-3 glass-button rounded-lg p-1 mb-6">
+                <TabsTrigger 
+                  value="signals" 
+                  className="text-xs md:text-sm rounded-md transition-all data-[state=active]:bg-white/20 data-[state=active]:text-white hover:bg-white/10"
+                >
+                  <span className="hidden sm:inline">Sinais Econômicos</span>
+                  <span className="sm:hidden">Sinais</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="impacts"
+                  className="text-xs md:text-sm rounded-md transition-all data-[state=active]:bg-white/20 data-[state=active]:text-white hover:bg-white/10"
+                >
+                  Impactos
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="recommendations"
+                  className="text-xs md:text-sm rounded-md transition-all data-[state=active]:bg-white/20 data-[state=active]:text-white hover:bg-white/10"
+                >
+                  <span className="hidden sm:inline">Recomendações</span>
+                  <span className="sm:hidden">Recom.</span>
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="signals" className="mt-0 focus-visible:outline-none">
+                <EconomicSignalsManager />
+              </TabsContent>
+              
+              <TabsContent value="impacts" className="mt-0 focus-visible:outline-none">
+                <EconomicImpactsManager />
+              </TabsContent>
+              
+              <TabsContent value="recommendations" className="mt-0 focus-visible:outline-none">
+                <EconomicRecommendationsView />
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
     </div>
