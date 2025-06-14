@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -104,20 +105,14 @@ export function EconomicSignalsManager() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="text-gray-400">Carregando...</div>
-      </div>
-    );
-  }
+  if (isLoading) return <div>Carregando...</div>;
 
   return (
-    <Card className="glass-card border-gray-700">
+    <Card>
       <CardHeader>
-        <CardTitle className="flex justify-between items-center text-white">
+        <CardTitle className="flex justify-between items-center">
           Sinais Econômicos
-          <Button onClick={() => setShowAddForm(!showAddForm)} className="glass-button hover:bg-white/20 text-white border-white/20">
+          <Button onClick={() => setShowAddForm(!showAddForm)}>
             <Plus className="h-4 w-4 mr-2" />
             Adicionar Sinal
           </Button>
@@ -125,43 +120,40 @@ export function EconomicSignalsManager() {
       </CardHeader>
       <CardContent>
         {showAddForm && (
-          <div className="mb-6 p-4 glass-card border-gray-600 rounded-lg space-y-4">
+          <div className="mb-6 p-4 border rounded-lg space-y-4">
             <div>
-              <Label htmlFor="nome_evento" className="text-gray-300">Nome do Evento</Label>
+              <Label htmlFor="nome_evento">Nome do Evento</Label>
               <Input
                 id="nome_evento"
                 value={newSignal.nome_evento}
                 onChange={(e) => setNewSignal({ ...newSignal, nome_evento: e.target.value })}
                 placeholder="Nome do evento econômico"
-                className="bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-gray-400"
               />
             </div>
             <div>
-              <Label htmlFor="descricao" className="text-gray-300">Descrição</Label>
+              <Label htmlFor="descricao">Descrição</Label>
               <Textarea
                 id="descricao"
                 value={newSignal.descricao}
                 onChange={(e) => setNewSignal({ ...newSignal, descricao: e.target.value })}
                 placeholder="Descrição do evento"
-                className="bg-gray-800/50 border-gray-600 text-white placeholder:text-gray-400 focus:border-gray-400"
               />
             </div>
             <div>
-              <Label htmlFor="data" className="text-gray-300">Data</Label>
+              <Label htmlFor="data">Data</Label>
               <Input
                 id="data"
                 type="date"
                 value={newSignal.data}
                 onChange={(e) => setNewSignal({ ...newSignal, data: e.target.value })}
-                className="bg-gray-800/50 border-gray-600 text-white focus:border-gray-400"
               />
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleCreate} disabled={createMutation.isPending} className="glass-button hover:bg-white/20 text-white border-white/20">
+              <Button onClick={handleCreate} disabled={createMutation.isPending}>
                 <Save className="h-4 w-4 mr-2" />
                 Salvar
               </Button>
-              <Button variant="outline" onClick={() => setShowAddForm(false)} className="border-gray-600 text-gray-300 hover:bg-white/10 hover:border-gray-400">
+              <Button variant="outline" onClick={() => setShowAddForm(false)}>
                 <X className="h-4 w-4 mr-2" />
                 Cancelar
               </Button>
@@ -169,78 +161,71 @@ export function EconomicSignalsManager() {
           </div>
         )}
 
-        <div className="glass-card border-gray-700 rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-gray-700 hover:bg-transparent">
-                <TableHead className="text-gray-300">Nome do Evento</TableHead>
-                <TableHead className="text-gray-300">Descrição</TableHead>
-                <TableHead className="text-gray-300">Data</TableHead>
-                <TableHead className="text-gray-300">Ações</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nome do Evento</TableHead>
+              <TableHead>Descrição</TableHead>
+              <TableHead>Data</TableHead>
+              <TableHead>Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {signals?.map((signal) => (
+              <TableRow key={signal.id}>
+                <TableCell>
+                  {editingId === signal.id ? (
+                    <Input
+                      defaultValue={signal.nome_evento}
+                      onBlur={(e) => handleUpdate(signal.id, 'nome_evento', e.target.value)}
+                    />
+                  ) : (
+                    signal.nome_evento
+                  )}
+                </TableCell>
+                <TableCell>
+                  {editingId === signal.id ? (
+                    <Textarea
+                      defaultValue={signal.descricao || ""}
+                      onBlur={(e) => handleUpdate(signal.id, 'descricao', e.target.value)}
+                    />
+                  ) : (
+                    signal.descricao
+                  )}
+                </TableCell>
+                <TableCell>
+                  {editingId === signal.id ? (
+                    <Input
+                      type="date"
+                      defaultValue={signal.data || ""}
+                      onBlur={(e) => handleUpdate(signal.id, 'data', e.target.value)}
+                    />
+                  ) : (
+                    signal.data ? new Date(signal.data).toLocaleDateString('pt-BR') : '-'
+                  )}
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditingId(editingId === signal.id ? null : signal.id)}
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(signal.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {signals?.map((signal) => (
-                <TableRow key={signal.id} className="border-gray-700 hover:bg-white/5">
-                  <TableCell className="text-white">
-                    {editingId === signal.id ? (
-                      <Input
-                        defaultValue={signal.nome_evento}
-                        onBlur={(e) => handleUpdate(signal.id, 'nome_evento', e.target.value)}
-                        className="bg-gray-800/50 border-gray-600 text-white"
-                      />
-                    ) : (
-                      signal.nome_evento
-                    )}
-                  </TableCell>
-                  <TableCell className="text-gray-300">
-                    {editingId === signal.id ? (
-                      <Textarea
-                        defaultValue={signal.descricao || ""}
-                        onBlur={(e) => handleUpdate(signal.id, 'descricao', e.target.value)}
-                        className="bg-gray-800/50 border-gray-600 text-white"
-                      />
-                    ) : (
-                      signal.descricao
-                    )}
-                  </TableCell>
-                  <TableCell className="text-gray-300">
-                    {editingId === signal.id ? (
-                      <Input
-                        type="date"
-                        defaultValue={signal.data || ""}
-                        onBlur={(e) => handleUpdate(signal.id, 'data', e.target.value)}
-                        className="bg-gray-800/50 border-gray-600 text-white"
-                      />
-                    ) : (
-                      signal.data ? new Date(signal.data).toLocaleDateString('pt-BR') : '-'
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setEditingId(editingId === signal.id ? null : signal.id)}
-                        className="border-gray-600 text-gray-300 hover:bg-white/10 hover:border-gray-400"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDelete(signal.id)}
-                        className="bg-red-900/50 border-red-700 text-red-300 hover:bg-red-800/50"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );
