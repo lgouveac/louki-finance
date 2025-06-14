@@ -8,6 +8,7 @@ interface HeroSectionProps {
   totalProventos: number;
 }
 
+// Dashboard super minimalista, valorizando números, sem boxes/fundos opacos
 export function HeroSection({
   totalAtual,
   totalInvestido,
@@ -18,41 +19,41 @@ export function HeroSection({
   const rendimentoAbsoluto = totalAtual - totalInvestido;
 
   return (
-    <section className="w-full mb-12 text-center flex flex-col items-center space-y-8">
-      {/* Valor Total */}
+    <section
+      className="w-full mb-20 md:mb-32 text-center flex flex-col items-center space-y-10"
+    >
       <div>
-        <h1 className="text-5xl md:text-6xl font-extrabold mb-2 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+        <h1 className="text-6xl md:text-7xl font-extrabold mb-3 bg-gradient-to-r from-primary to-[#C7CCE5] bg-clip-text text-transparent tracking-tight drop-shadow-[0_2px_8px_rgba(50,60,110,0.13)]">
           R$ {totalAtual.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </h1>
-        <p className="text-lg text-primary font-medium tracking-wide">
-          Valor Total da Carteira
+        <p className="text-lg md:text-xl text-[#C7CCE5] font-light">
+          Valor atual da carteira
         </p>
       </div>
-      {/* Métricas principais em linha */}
-      <div className="flex gap-8 flex-wrap justify-center">
+      <div className="flex flex-wrap gap-x-20 gap-y-9 justify-center items-center md:gap-x-32">
         <div>
-          <div className={`text-2xl md:text-3xl font-bold ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+          <div className={`text-3xl md:text-4xl font-bold mb-1 ${isPositive ? "text-green-400" : "text-red-400"}`}>
             {rendimentoPercent > 0 ? '+' : ''}{rendimentoPercent.toFixed(2)}%
           </div>
-          <div className="text-xs text-foreground/60">Rentabilidade</div>
+          <div className="text-sm text-[#B0B4C2] font-medium tracking-wide">Rentabilidade</div>
         </div>
         <div>
-          <div className="text-2xl md:text-3xl font-bold text-blue-500">
+          <div className="text-3xl md:text-4xl font-bold mb-1 text-blue-400">
             R$ {totalInvestido.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
           </div>
-          <div className="text-xs text-foreground/60">Total Investido</div>
+          <div className="text-sm text-[#B0B4C2] font-medium tracking-wide">Total Investido</div>
         </div>
         <div>
-          <div className="text-2xl md:text-3xl font-bold text-amber-500">
+          <div className="text-3xl md:text-4xl font-bold mb-1 text-amber-400">
             R$ {totalProventos.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
           </div>
-          <div className="text-xs text-foreground/60">Proventos Acumulados</div>
+          <div className="text-sm text-[#B0B4C2] font-medium tracking-wide">Proventos</div>
         </div>
         <div>
-          <div className={`text-2xl md:text-3xl font-bold ${rendimentoAbsoluto >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+          <div className={`text-3xl md:text-4xl font-bold mb-1 ${rendimentoAbsoluto >= 0 ? "text-green-400" : "text-red-400"}`}>
             {rendimentoAbsoluto >= 0 ? '+' : ''}R$ {rendimentoAbsoluto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
-          <div className="text-xs text-foreground/60">Lucro/Prejuízo</div>
+          <div className="text-sm text-[#B0B4C2] font-medium tracking-wide">Lucro/Prejuízo</div>
         </div>
       </div>
     </section>

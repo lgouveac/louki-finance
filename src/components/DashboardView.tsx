@@ -73,7 +73,8 @@ export function DashboardView() {
         rendimentoPercent={rentabilidade.rentabilidade_sem_proventos || 0}
         totalProventos={rentabilidade.total_proventos || 0}
       />
-      <div className="flex flex-col gap-20">
+
+      <div className="flex flex-col gap-16 md:gap-20">
         <PortfolioDistribution data={dashboardData} />
         <PerformanceMetrics
           rentabilidadeSemProventos={rentabilidade.rentabilidade_sem_proventos || 0}

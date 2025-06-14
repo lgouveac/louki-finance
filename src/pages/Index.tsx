@@ -2,15 +2,16 @@
 import { DashboardView } from "@/components/DashboardView";
 import { Header } from "@/components/Header";
 
+// Gradiente elegante sutil para o fundo do dashboard
 const Index = () => {
   return (
-    <div className="min-h-screen gradient-dark">
+    <div className="min-h-screen bg-gradient-to-br from-[#171B24] via-[#202634] to-[#181A1F]">
       <Header />
       <div className="pb-10 pt-2 md:pt-4">
         <div className="mx-auto max-w-7xl px-2">
-          <div className="mb-12 md:mb-16">
-            <h1 className="text-3xl md:text-4xl font-extrabold mb-2 text-center">Dashboard</h1>
-            <p className="text-xl text-primary text-center">
+          <div className="mb-14 md:mb-20">
+            <h1 className="text-3xl md:text-4xl font-extrabold mb-2 text-center text-white tracking-tight">Dashboard</h1>
+            <p className="text-xl text-[#C7CCE5] text-center font-light">
               Acompanhe o desempenho dos seus investimentos
             </p>
           </div>
