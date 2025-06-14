@@ -2,26 +2,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { LayoutDashboardIcon, WalletIcon, BarChartIcon, CoinsIcon, UploadIcon, Menu, Settings, TrendingUp } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
 export function MainNav() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
-  
-  // Garantir que o body scroll seja restaurado quando o drawer fecha
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    
-    // Cleanup quando component desmonta
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [open]);
   
   const navItems = [
     {
