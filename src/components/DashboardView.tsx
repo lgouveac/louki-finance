@@ -31,23 +31,13 @@ export function DashboardView() {
 
   if (isLoading) {
     return (
-      <div className="space-y-8">
-        {/* Hero Section Skeleton */}
-        <div className="text-center space-y-4">
-          <Skeleton className="h-16 w-80 mx-auto" />
-          <Skeleton className="h-6 w-48 mx-auto" />
+      <div className="space-y-12">
+        <div className="flex flex-col items-center space-y-8">
+          <Skeleton className="h-16 w-1/2 md:w-1/4" />
+          <Skeleton className="h-10 w-2/3 md:w-1/3" />
         </div>
-        
-        {/* Cards Skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[...Array(3)].map((_, i) => (
-            <Skeleton key={i} className="h-32 w-full" />
-          ))}
-        </div>
-        
-        {/* Charts Skeleton */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Skeleton className="h-80 w-full" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <Skeleton className="h-96 w-full" />
           <Skeleton className="h-80 w-full" />
         </div>
       </div>
@@ -56,7 +46,7 @@ export function DashboardView() {
 
   if ((dashboardError && dashboardData.length === 0) || (rentabilidadeError && rentabilidadeData.length === 0)) {
     return (
-      <div className="flex justify-center items-center h-[400px] glass-card rounded-lg p-8">
+      <div className="flex justify-center items-center h-[400px] rounded-lg p-8">
         <div className="text-center space-y-4">
           <div className="text-6xl">📊</div>
           <p className="text-lg font-medium">Não foi possível carregar os dados</p>
@@ -66,7 +56,7 @@ export function DashboardView() {
     );
   }
 
-  // Prepare data for rendering
+  // Dados reais da API
   const rentabilidade = rentabilidadeData[0] || {
     rentabilidade_sem_proventos: 0,
     total_atual: 0,
@@ -76,17 +66,15 @@ export function DashboardView() {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Hero Section */}
+    <main className="w-full">
       <HeroSection
         totalAtual={rentabilidade.total_atual || 0}
         totalInvestido={rentabilidade.total_investido || 0}
         rendimentoPercent={rentabilidade.rentabilidade_sem_proventos || 0}
         totalProventos={rentabilidade.total_proventos || 0}
       />
-
-      {/* Performance and Distribution Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="flex flex-col gap-20">
+        <PortfolioDistribution data={dashboardData} />
         <PerformanceMetrics
           rentabilidadeSemProventos={rentabilidade.rentabilidade_sem_proventos || 0}
           rentabilidadeComProventos={rentabilidade.rentabilidade_com_proventos || 0}
@@ -94,9 +82,7 @@ export function DashboardView() {
           totalAtual={rentabilidade.total_atual || 0}
           totalProventos={rentabilidade.total_proventos || 0}
         />
-        
-        <PortfolioDistribution data={dashboardData} />
       </div>
-    </div>
+    </main>
   );
 }
