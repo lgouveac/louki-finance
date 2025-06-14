@@ -20,40 +20,40 @@ const AnaliseEconomica = () => {
             </p>
           </div>
           
-          <div className="glass-card rounded-xl p-4 md:p-6">
+          <div className="space-y-6">
             <Tabs defaultValue="signals" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 glass-button rounded-lg p-1 mb-6">
+              <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
                 <TabsTrigger 
                   value="signals" 
-                  className="text-xs md:text-sm rounded-md transition-all data-[state=active]:bg-white/20 data-[state=active]:text-white hover:bg-white/10"
+                  className="text-xs md:text-sm px-2 py-2"
                 >
                   <span className="hidden sm:inline">Sinais Econômicos</span>
                   <span className="sm:hidden">Sinais</span>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="impacts"
-                  className="text-xs md:text-sm rounded-md transition-all data-[state=active]:bg-white/20 data-[state=active]:text-white hover:bg-white/10"
+                  className="text-xs md:text-sm px-2 py-2"
                 >
                   Impactos
                 </TabsTrigger>
                 <TabsTrigger 
                   value="recommendations"
-                  className="text-xs md:text-sm rounded-md transition-all data-[state=active]:bg-white/20 data-[state=active]:text-white hover:bg-white/10"
+                  className="text-xs md:text-sm px-2 py-2"
                 >
                   <span className="hidden sm:inline">Recomendações</span>
                   <span className="sm:hidden">Recom.</span>
                 </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="signals" className="mt-0 focus-visible:outline-none">
+              <TabsContent value="signals" className="space-y-4">
                 <EconomicSignalsManager />
               </TabsContent>
               
-              <TabsContent value="impacts" className="mt-0 focus-visible:outline-none">
+              <TabsContent value="impacts" className="space-y-4">
                 <EconomicImpactsManager />
               </TabsContent>
               
-              <TabsContent value="recommendations" className="mt-0 focus-visible:outline-none">
+              <TabsContent value="recommendations" className="space-y-4">
                 <EconomicRecommendationsView />
               </TabsContent>
             </Tabs>
