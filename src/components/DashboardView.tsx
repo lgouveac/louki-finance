@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardData, getRentabilidade } from "@/services/viewsService";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -75,6 +74,7 @@ export function DashboardView() {
       />
 
       <div className="flex flex-col gap-16 md:gap-20">
+        {/* No card na pizza para manter visual leve; Performance ficará com cards */}
         <PortfolioDistribution data={dashboardData} />
         <PerformanceMetrics
           rentabilidadeSemProventos={rentabilidade.rentabilidade_sem_proventos || 0}
