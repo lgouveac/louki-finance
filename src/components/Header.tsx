@@ -1,5 +1,6 @@
 
 import { MainNav } from "@/components/MainNav";
+import { AppLogo } from "@/components/AppLogo";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { LogOut, User } from "lucide-react";
@@ -14,9 +15,9 @@ export function Header() {
   return (
     <div className="border-b border-muted">
       <div className="flex h-16 items-center px-4">
-        <div className="font-semibold text-lg truncate flex items-center">
-          <span className="text-primary mr-2">•</span>
-          Meus Investimentos
+        <div className="flex items-center">
+          <AppLogo size="medium" className="mb-0 mr-3" />
+          <span className="font-semibold text-lg text-white">Meus Investimentos</span>
         </div>
         
         <div className="flex-1 flex justify-end items-center gap-4">
