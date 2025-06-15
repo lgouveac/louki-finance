@@ -4,7 +4,7 @@ import { getDashboardData, getRentabilidade } from "@/services/viewsService";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PortfolioDistribution } from "@/components/dashboard/PortfolioDistribution";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowUp } from "lucide-react";
+import { TrendingUp, DollarSign, Coins } from "lucide-react";
 import { useMemo } from "react";
 
 // Novo componente para o Resumo de Rentabilidade tipo tabela-card
@@ -108,7 +108,7 @@ export function DashboardView() {
         value: "R$ " + totalAtual.toLocaleString("pt-BR", { minimumFractionDigits: 2 }),
         icon: (
           <span className="bg-gradient-to-br from-blue-600 via-blue-400 to-blue-700 p-2 rounded-full">
-            <ArrowUp className="w-7 h-7 text-white" />
+            <DollarSign className="w-7 h-7 text-white" />
           </span>
         ),
         cardClass: "bg-[#16181e]",
@@ -119,7 +119,7 @@ export function DashboardView() {
         value: `${rentabilidadeSemProventos.toFixed(2)}%`,
         icon: (
           <span className="bg-gradient-to-br from-green-800 via-green-600 to-green-400 p-2 rounded-full">
-            <ArrowUp className="w-7 h-7 text-green-300" />
+            <TrendingUp className="w-7 h-7 text-green-300" />
           </span>
         ),
         cardClass: "bg-[#18221B]",
@@ -130,7 +130,7 @@ export function DashboardView() {
         value: "R$ " + totalProventos.toLocaleString("pt-BR", { minimumFractionDigits: 2 }),
         icon: (
           <span className="bg-gradient-to-br from-amber-700 via-yellow-500 to-amber-400 p-2 rounded-full">
-            <ArrowUp className="w-7 h-7 text-amber-200" />
+            <Coins className="w-7 h-7 text-amber-200" />
           </span>
         ),
         cardClass: "bg-[#231e18]",
