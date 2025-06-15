@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FileUpIcon, UploadIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+
 export function ImportacaoView() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
@@ -99,14 +101,54 @@ export function ImportacaoView() {
         </Card>
       </div>;
   }
+
   return <div className="max-w-2xl mx-auto space-y-8">
-      <div className="text-center space-y-2">
+      <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold">Importar Dados</h2>
-        <p className="text-muted-foreground text-left">Envie seus arquivos de investimentos baixados na Área do Investidor da B3 e print da carteira.
-
-
- - Utilizar carteiras da B3 de proventos, posição atualizada e negociações
- - Nos prints, garanta que apareça obrigatoriamente Código e Valor Atual, Preço Médio e Proventos são opcionais.</p>
+        
+        <div className="text-left space-y-4">
+          <p className="text-base text-foreground">
+            Envie seus arquivos de investimentos baixados na Área do Investidor da B3 e prints da carteira.
+          </p>
+          
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-foreground">Arquivos aceitos da B3:</h3>
+            <ul className="space-y-2 text-muted-foreground">
+              <li className="flex items-start">
+                <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span>Carteiras de proventos</span>
+              </li>
+              <li className="flex items-start">
+                <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span>Posição atualizada</span>
+              </li>
+              <li className="flex items-start">
+                <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span>Negociações</span>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="space-y-3">
+            <h3 className="text-lg font-semibold text-foreground">Requisitos para prints:</h3>
+            <div className="space-y-2">
+              <div className="pl-4 border-l-4 border-primary bg-primary/5 py-2">
+                <p className="text-sm font-medium text-foreground">Obrigatório:</p>
+                <ul className="text-sm text-muted-foreground mt-1 space-y-1">
+                  <li>• Código do ativo</li>
+                  <li>• Valor atual</li>
+                </ul>
+              </div>
+              <div className="pl-4 border-l-4 border-muted bg-muted/20 py-2">
+                <p className="text-sm font-medium text-muted-foreground">Opcional:</p>
+                <ul className="text-sm text-muted-foreground mt-1 space-y-1">
+                  <li>• Preço médio</li>
+                  <li>• Proventos</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Card className="border-dashed border-2 hover:border-primary/50 transition-colors">
