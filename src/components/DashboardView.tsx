@@ -1,11 +1,10 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { getDashboardData, getRentabilidade } from "@/services/viewsService";
 import { Skeleton } from "@/components/ui/skeleton";
-import { HeroSection } from "@/components/dashboard/HeroSection";
 import { PortfolioDistribution } from "@/components/dashboard/PortfolioDistribution";
-import { PerformanceMetrics } from "@/components/dashboard/PerformanceMetrics";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { useMemo } from "react";
 
 // Novo componente para o Resumo de Rentabilidade tipo tabela-card
@@ -77,6 +76,69 @@ export function DashboardView() {
 
   const isLoading = isDashboardLoading || isRentabilidadeLoading;
 
+  // Extrair dados de rentabilidade com valores padrão seguros
+  const rentabilidade = useMemo(() => {
+    if (!rentabilidadeData || rentabilidadeData.length === 0) {
+      return {
+        rentabilidade_sem_proventos: 0,
+        total_atual: 0,
+        total_investido: 0,
+        rentabilidade_com_proventos: 0,
+        total_proventos: 0
+      };
+    }
+    return rentabilidadeData[0] || {
+      rentabilidade_sem_proventos: 0,
+      total_atual: 0,
+      total_investido: 0,
+      rentabilidade_com_proventos: 0,
+      total_proventos: 0
+    };
+  }, [rentabilidadeData]);
+
+  // Criar cards com dados seguros
+  const cards = useMemo(() => {
+    const totalAtual = Number(rentabilidade.total_atual) || 0;
+    const rentabilidadeSemProventos = Number(rentabilidade.rentabilidade_sem_proventos) || 0;
+    const totalProventos = Number(rentabilidade.total_proventos) || 0;
+
+    return [
+      {
+        label: "Valor Total",
+        value: "R$ " + totalAtual.toLocaleString("pt-BR", { minimumFractionDigits: 2 }),
+        icon: (
+          <span className="bg-gradient-to-br from-blue-600 via-blue-400 to-blue-700 p-2 rounded-full">
+            <ArrowUp className="w-7 h-7 text-white" />
+          </span>
+        ),
+        cardClass: "bg-[#16181e]",
+        valueClass: "text-white"
+      },
+      {
+        label: "Rendimento (%)",
+        value: `${rentabilidadeSemProventos.toFixed(2)}%`,
+        icon: (
+          <span className="bg-gradient-to-br from-green-800 via-green-600 to-green-400 p-2 rounded-full">
+            <ArrowUp className="w-7 h-7 text-green-300" />
+          </span>
+        ),
+        cardClass: "bg-[#18221B]",
+        valueClass: "text-green-400"
+      },
+      {
+        label: "Proventos Recebidos",
+        value: "R$ " + totalProventos.toLocaleString("pt-BR", { minimumFractionDigits: 2 }),
+        icon: (
+          <span className="bg-gradient-to-br from-amber-700 via-yellow-500 to-amber-400 p-2 rounded-full">
+            <ArrowUp className="w-7 h-7 text-amber-200" />
+          </span>
+        ),
+        cardClass: "bg-[#231e18]",
+        valueClass: "text-amber-400"
+      }
+    ];
+  }, [rentabilidade]);
+
   if (isLoading) {
     return (
       <div className="space-y-12">
@@ -104,52 +166,6 @@ export function DashboardView() {
     );
   }
 
-  // Dados reais da API
-  const rentabilidade = rentabilidadeData[0] || {
-    rentabilidade_sem_proventos: 0,
-    total_atual: 0,
-    total_investido: 0,
-    rentabilidade_com_proventos: 0,
-    total_proventos: 0
-  };
-
-  // Usar useMemo para formatação otimizada
-  const cards = useMemo(() => [
-    {
-      label: "Valor Total",
-      value: "R$ " + (rentabilidade.total_atual || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 }),
-      icon: (
-        <span className="bg-gradient-to-br from-blue-600 via-blue-400 to-blue-700 p-2 rounded-full">
-          <ArrowUp className="w-7 h-7 text-white" />
-        </span>
-      ),
-      cardClass: "bg-[#16181e]",
-      valueClass: "text-white"
-    },
-    {
-      label: "Rendimento (%)",
-      value: `${(rentabilidade.rentabilidade_sem_proventos || 0).toFixed(2)}%`,
-      icon: (
-        <span className="bg-gradient-to-br from-green-800 via-green-600 to-green-400 p-2 rounded-full">
-          <ArrowUp className="w-7 h-7 text-green-300" />
-        </span>
-      ),
-      cardClass: "bg-[#18221B]",
-      valueClass: "text-green-400"
-    },
-    {
-      label: "Proventos Recebidos",
-      value: "R$ " + (rentabilidade.total_proventos || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 }),
-      icon: (
-        <span className="bg-gradient-to-br from-amber-700 via-yellow-500 to-amber-400 p-2 rounded-full">
-          <ArrowUp className="w-7 h-7 text-amber-200" />
-        </span>
-      ),
-      cardClass: "bg-[#231e18]",
-      valueClass: "text-amber-400"
-    }
-  ], [rentabilidade]);
-
   return (
     <main className="w-full">
 
@@ -168,11 +184,11 @@ export function DashboardView() {
 
       {/* Resumo de Rentabilidade */}
       <RentabilidadeResumo
-        totalInvestido={rentabilidade.total_investido ?? 0}
-        totalAtual={rentabilidade.total_atual ?? 0}
-        rentabilidadeSemProventos={rentabilidade.rentabilidade_sem_proventos ?? 0}
-        totalProventos={rentabilidade.total_proventos ?? 0}
-        rentabilidadeComProventos={rentabilidade.rentabilidade_com_proventos ?? 0}
+        totalInvestido={Number(rentabilidade.total_investido) || 0}
+        totalAtual={Number(rentabilidade.total_atual) || 0}
+        rentabilidadeSemProventos={Number(rentabilidade.rentabilidade_sem_proventos) || 0}
+        totalProventos={Number(rentabilidade.total_proventos) || 0}
+        rentabilidadeComProventos={Number(rentabilidade.rentabilidade_com_proventos) || 0}
       />
 
       {/* Distribuição Gráfica com degrade e paleta nova */}
