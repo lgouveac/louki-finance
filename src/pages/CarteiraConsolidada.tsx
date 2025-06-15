@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { PortfolioSummary, CarteiraAtual } from "@/types/stock";
 import { getPortfolioSummary } from "@/services/stockService";
@@ -11,7 +10,6 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Filter, X } from "lucide-react";
-
 const CarteiraConsolidada = () => {
   const [summary, setSummary] = useState<PortfolioSummary>({
     totalValue: 0,
@@ -24,26 +22,18 @@ const CarteiraConsolidada = () => {
   const [tipoFilter, setTipoFilter] = useState<string>("");
   const [tipoOptions, setTipoOptions] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
-        
+
         // Fetch summary data
         const summaryData = await getPortfolioSummary();
         setSummary(summaryData);
-        
+
         // Fetch carteira data to get all unique Tipo values for the filter
         const carteiraData = await getCarteiraAtual();
-        const uniqueTipos = Array.from(
-          new Set(
-            carteiraData
-              .map(item => item.Tipo)
-              .filter(tipo => tipo !== null) as string[]
-          )
-        ).sort();
-        
+        const uniqueTipos = Array.from(new Set(carteiraData.map(item => item.Tipo).filter(tipo => tipo !== null) as string[])).sort();
         setTipoOptions(uniqueTipos);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -51,20 +41,15 @@ const CarteiraConsolidada = () => {
         setIsLoading(false);
       }
     }
-    
     fetchData();
   }, []);
-
   const clearFilters = () => {
     setSearchQuery("");
     setTipoFilter("");
   };
-
   const hasActiveFilters = searchQuery !== "" || tipoFilter !== "";
-
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background">
+    return <div className="min-h-screen bg-background">
         <Header />
         <div className="flex items-center justify-center min-h-[calc(100vh-64px)]">
           <div className="flex flex-col items-center">
@@ -72,12 +57,9 @@ const CarteiraConsolidada = () => {
             <p className="text-lg">Carregando dados...</p>
           </div>
         </div>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <Header />
       <div className="p-3 md:p-6">
         <div className="mx-auto max-w-7xl">
@@ -85,53 +67,27 @@ const CarteiraConsolidada = () => {
           
           {/* Ícones de busca e filtro */}
           <div className="flex items-center gap-3 mb-4">
-            <Button
-              variant={searchQuery ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2"
-            >
+            <Button variant={searchQuery ? "default" : "outline"} size="sm" onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2">
               <Search className="h-4 w-4" />
               Buscar
             </Button>
             
-            <Button
-              variant={tipoFilter ? "default" : "outline"}
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2"
-            >
-              <Filter className="h-4 w-4" />
-              Filtrar
-            </Button>
+            
 
-            {hasActiveFilters && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={clearFilters}
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
-              >
+            {hasActiveFilters && <Button variant="ghost" size="sm" onClick={clearFilters} className="flex items-center gap-2 text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
                 Limpar
-              </Button>
-            )}
+              </Button>}
           </div>
 
           {/* Box expansível de filtros */}
-          {showFilters && (
-            <Card className="mb-6 border-2 border-dashed border-muted-foreground/20">
+          {showFilters && <Card className="mb-6 border-2 border-dashed border-muted-foreground/20">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-medium text-muted-foreground">
                     Busca e Filtros
                   </h3>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowFilters(false)}
-                    className="h-6 w-6 p-0"
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => setShowFilters(false)} className="h-6 w-6 p-0">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
@@ -139,60 +95,41 @@ const CarteiraConsolidada = () => {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="relative flex-grow">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                    <Input 
-                      placeholder="Buscar por código..." 
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
+                    <Input placeholder="Buscar por código..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10" />
                   </div>
                   
                   <div className="w-full sm:w-64 sm:flex-shrink-0">
-                    <Select 
-                      value={tipoFilter} 
-                      onValueChange={setTipoFilter}
-                    >
+                    <Select value={tipoFilter} onValueChange={setTipoFilter}>
                       <SelectTrigger>
                         <SelectValue placeholder="Filtrar por tipo" />
                       </SelectTrigger>
                       <SelectContent className="z-50">
                         <SelectItem value="_all">Todos os tipos</SelectItem>
-                        {tipoOptions.map((tipo) => (
-                          <SelectItem key={tipo} value={tipo}>
+                        {tipoOptions.map(tipo => <SelectItem key={tipo} value={tipo}>
                             {tipo}
-                          </SelectItem>
-                        ))}
+                          </SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
                 
-                {hasActiveFilters && (
-                  <div className="mt-3 pt-3 border-t border-muted">
+                {hasActiveFilters && <div className="mt-3 pt-3 border-t border-muted">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span>Filtros ativos:</span>
-                      {searchQuery && (
-                        <span className="px-2 py-1 bg-muted rounded text-xs">
+                      {searchQuery && <span className="px-2 py-1 bg-muted rounded text-xs">
                           Busca: "{searchQuery}"
-                        </span>
-                      )}
-                      {tipoFilter && tipoFilter !== "_all" && (
-                        <span className="px-2 py-1 bg-muted rounded text-xs">
+                        </span>}
+                      {tipoFilter && tipoFilter !== "_all" && <span className="px-2 py-1 bg-muted rounded text-xs">
                           Tipo: {tipoFilter}
-                        </span>
-                      )}
+                        </span>}
                     </div>
-                  </div>
-                )}
+                  </div>}
               </CardContent>
-            </Card>
-          )}
+            </Card>}
           
           <DataTabView searchQuery={searchQuery} tipoFilter={tipoFilter === "_all" ? "" : tipoFilter} />
         </div>
       </div>
-    </div>
-  );
-}
-
+    </div>;
+};
 export default CarteiraConsolidada;
