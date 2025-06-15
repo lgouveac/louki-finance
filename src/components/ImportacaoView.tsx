@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { FileUpIcon, UploadIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-
 export function ImportacaoView() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
@@ -101,7 +99,6 @@ export function ImportacaoView() {
         </Card>
       </div>;
   }
-
   return <div className="max-w-2xl mx-auto space-y-8">
       <div className="text-center space-y-4">
         <h2 className="text-3xl font-bold">Importar Dados</h2>
@@ -197,29 +194,7 @@ export function ImportacaoView() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Formatos Suportados</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <h4 className="font-medium mb-2">Planilhas</h4>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• CSV (.csv)</li>
-                <li>• Excel (.xls, .xlsx)</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">Imagens</h4>
-              <ul className="space-y-1 text-muted-foreground">
-                <li>• PNG (.png)</li>
-                <li>• JPEG (.jpg, .jpeg)</li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      
 
       
     </div>;
