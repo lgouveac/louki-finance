@@ -178,9 +178,16 @@ export const getCarteiraComparativa = async (): Promise<CarteiraComparativa[]> =
 
 export const upsertCarteiraIdeal = async (tipo: string, percentual_ideal: number): Promise<void> => {
   try {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('Usuário não autenticado');
+    }
+
     const { error } = await supabase
       .from('carteira_ideal')
       .upsert({ 
+        user_id: user.id,
         tipo, 
         percentual_ideal 
       }, { 

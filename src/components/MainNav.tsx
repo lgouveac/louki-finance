@@ -8,7 +8,7 @@ import {
   FileTextIcon, 
   UploadIcon, 
   CogIcon,
-  AnalyticsIcon,
+  BarChart3,
   Target,
   DollarSign
 } from "lucide-react";
@@ -62,7 +62,7 @@ export function MainNav() {
     {
       href: "/analise-economica",
       label: "Análise Econômica",
-      icon: AnalyticsIcon,
+      icon: BarChart3,
       active: location.pathname === "/analise-economica",
     }
   ];
