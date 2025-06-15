@@ -1,3 +1,4 @@
+
 export interface Stock {
   symbol: string;
   name: string;
@@ -104,4 +105,25 @@ export interface AnomaliaCorrigida {
   preco_medio_corrigido: number | null;
   valor_investido: number | null;
   sem_evento_registrado: boolean | null;
+}
+
+// Interface for carteira_ideal table
+export interface CarteiraIdeal {
+  id: string;
+  user_id: string;
+  tipo: string;
+  percentual_ideal: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Interface for carteira_comparativa view
+export interface CarteiraComparativa {
+  tipo: string | null;
+  valor_atual: number | null;
+  percentual_atual: number | null;
+  percentual_ideal: number | null;
+  diferenca_percentual: number | null;
+  acao_sugerida: string | null;
+  user_id: string | null;
 }

@@ -72,6 +72,33 @@ export type Database = {
         }
         Relationships: []
       }
+      carteira_ideal: {
+        Row: {
+          created_at: string | null
+          id: string
+          percentual_ideal: number
+          tipo: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          percentual_ideal: number
+          tipo: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          percentual_ideal?: number
+          tipo?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       cotacao_atual: {
         Row: {
           codigo: string | null
@@ -312,6 +339,18 @@ export type Database = {
         }
         Relationships: []
       }
+      carteira_comparativa: {
+        Row: {
+          acao_sugerida: string | null
+          diferenca_percentual: number | null
+          percentual_atual: number | null
+          percentual_ideal: number | null
+          tipo: string | null
+          user_id: string | null
+          valor_atual: number | null
+        }
+        Relationships: []
+      }
       carteira_consolidada: {
         Row: {
           codigo: string | null
@@ -409,6 +448,10 @@ export type Database = {
           p_valor_atual: number
           p_proventos?: number
         }
+        Returns: string
+      }
+      inicializar_carteira_ideal: {
+        Args: Record<PropertyKey, never>
         Returns: string
       }
     }

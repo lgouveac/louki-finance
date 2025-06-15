@@ -1,5 +1,6 @@
+
 import { supabase } from "@/integrations/supabase/client";
-import { CarteiraAtual, ProventosRecebidos, DashboardData, Rentabilidade, AnomaliaCorrigida, ProventosMensais } from "@/types/stock";
+import { CarteiraAtual, ProventosRecebidos, DashboardData, Rentabilidade, AnomaliaCorrigida, ProventosMensais, CarteiraIdeal, CarteiraComparativa } from "@/types/stock";
 
 export interface DividendYieldAnual {
   ano: number;
@@ -133,5 +134,99 @@ export const getDividendYieldAnual = async (): Promise<DividendYieldAnual[]> => 
   } catch (err) {
     console.error('Unexpected error in getDividendYieldAnual:', err);
     return [];
+  }
+};
+
+// Funções para carteira ideal
+export const getCarteiraIdeal = async (): Promise<CarteiraIdeal[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('carteira_ideal')
+      .select('*')
+      .order('tipo');
+    
+    if (error) {
+      console.error('Error fetching carteira_ideal:', error);
+      throw error;
+    }
+    
+    return data as CarteiraIdeal[] || [];
+  } catch (err) {
+    console.error('Unexpected error in getCarteiraIdeal:', err);
+    return [];
+  }
+};
+
+export const getCarteiraComparativa = async (): Promise<CarteiraComparativa[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('carteira_comparativa')
+      .select('*')
+      .order('tipo');
+    
+    if (error) {
+      console.error('Error fetching carteira_comparativa view:', error);
+      throw error;
+    }
+    
+    return data as CarteiraComparativa[] || [];
+  } catch (err) {
+    console.error('Unexpected error in getCarteiraComparativa:', err);
+    return [];
+  }
+};
+
+export const upsertCarteiraIdeal = async (tipo: string, percentual_ideal: number): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from('carteira_ideal')
+      .upsert({ 
+        tipo, 
+        percentual_ideal 
+      }, { 
+        onConflict: 'user_id,tipo' 
+      });
+    
+    if (error) {
+      console.error('Error upserting carteira_ideal:', error);
+      throw error;
+    }
+  } catch (err) {
+    console.error('Unexpected error in upsertCarteiraIdeal:', err);
+    throw err;
+  }
+};
+
+export const deleteCarteiraIdeal = async (id: string): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from('carteira_ideal')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error('Error deleting carteira_ideal:', error);
+      throw error;
+    }
+  } catch (err) {
+    console.error('Unexpected error in deleteCarteiraIdeal:', err);
+    throw err;
+  }
+};
+
+export const inicializarCarteiraIdeal = async (): Promise<string> => {
+  try {
+    const { data, error } = await supabase
+      .rpc('inicializar_carteira_ideal');
+    
+    if (error) {
+      console.error('Error calling inicializar_carteira_ideal:', error);
+      throw error;
+    }
+    
+    return data;
+  } catch (err) {
+    console.error('Unexpected error in inicializarCarteiraIdeal:', err);
+    throw err;
   }
 };

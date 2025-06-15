@@ -1,83 +1,92 @@
 
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { LayoutDashboardIcon, WalletIcon, BarChartIcon, CoinsIcon, UploadIcon, Menu, Settings, TrendingUp } from "lucide-react";
-import { useState } from "react";
-import { Drawer, DrawerContent, DrawerTrigger, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
+import { 
+  HomeIcon, 
+  WalletIcon, 
+  TrendingUpIcon, 
+  FileTextIcon, 
+  UploadIcon, 
+  CogIcon,
+  AnalyticsIcon,
+  Target,
+  DollarSign
+} from "lucide-react";
 
 export function MainNav() {
   const location = useLocation();
-  const [open, setOpen] = useState(false);
   
-  const navItems = [
+  const routes = [
     {
-      title: "Dashboard",
       href: "/",
-      icon: LayoutDashboardIcon,
+      label: "Dashboard",
+      icon: HomeIcon,
+      active: location.pathname === "/",
     },
     {
-      title: "Carteira Consolidada",
       href: "/carteira",
+      label: "Carteira",
       icon: WalletIcon,
+      active: location.pathname === "/carteira",
     },
     {
-      title: "Alteração PM",
-      href: "/alteracao-pm",
-      icon: BarChartIcon,
+      href: "/carteira-ideal",
+      label: "Carteira Ideal",
+      icon: Target,
+      active: location.pathname === "/carteira-ideal",
     },
     {
-      title: "Dividendos",
       href: "/dividendos",
-      icon: CoinsIcon,
+      label: "Dividendos",
+      icon: DollarSign,
+      active: location.pathname === "/dividendos",
     },
     {
-      title: "Importação",
       href: "/importacao",
+      label: "Importação",
       icon: UploadIcon,
+      active: location.pathname === "/importacao",
     },
     {
-      title: "Ativos Manuais",
       href: "/ativos-manuais",
-      icon: Settings,
+      label: "Ativos Manuais",
+      icon: CogIcon,
+      active: location.pathname === "/ativos-manuais",
     },
     {
-      title: "Análise Econômica",
+      href: "/alteracao-pm",
+      label: "Alteração PM",
+      icon: FileTextIcon,
+      active: location.pathname === "/alteracao-pm",
+    },
+    {
       href: "/analise-economica",
-      icon: TrendingUp,
+      label: "Análise Econômica",
+      icon: AnalyticsIcon,
+      active: location.pathname === "/analise-economica",
     }
   ];
-  
+
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <button className="p-2 rounded-md hover:bg-accent">
-          <Menu className="h-5 w-5" />
-          <span className="sr-only">Menu</span>
-        </button>
-      </DrawerTrigger>
-      <DrawerContent className="h-[85vh] max-h-[85vh] flex flex-col">
-        <DrawerHeader className="flex-shrink-0">
-          <DrawerTitle>Menu de Navegação</DrawerTitle>
-        </DrawerHeader>
-        <nav className="flex flex-col space-y-2 p-4 flex-1 overflow-y-auto">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className={cn(
-                "flex items-center text-base py-4 px-4 rounded-md font-medium transition-colors hover:bg-accent min-h-[48px]",
-                location.pathname === item.href
-                  ? "bg-accent/50 text-primary"
-                  : "text-muted-foreground"
-              )}
-              onClick={() => setOpen(false)}
-            >
-              <item.icon className="h-6 w-6 mr-4" />
-              {item.title}
-            </Link>
-          ))}
-        </nav>
-      </DrawerContent>
-    </Drawer>
+    <nav className="flex items-center space-x-1 lg:space-x-2">
+      {routes.map((route) => {
+        const Icon = route.icon;
+        return (
+          <Link
+            key={route.href}
+            to={route.href}
+            className={cn(
+              "flex items-center text-sm font-medium transition-colors hover:text-primary px-2 py-1.5 rounded-md",
+              route.active 
+                ? "text-black bg-accent" 
+                : "text-muted-foreground hover:bg-accent/50"
+            )}
+          >
+            <Icon className="h-4 w-4 mr-1.5" />
+            <span className="hidden md:inline">{route.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
   );
 }
