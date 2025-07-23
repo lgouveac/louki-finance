@@ -1,8 +1,12 @@
 
 import { CarteiraAtual } from "@/types/stock";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { WalletIcon } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { WalletIcon, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface CarteiraAtualViewProps {
   data: CarteiraAtual[];
@@ -10,6 +14,34 @@ interface CarteiraAtualViewProps {
 }
 
 export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
+  const [selectedCodigos, setSelectedCodigos] = useState<Set<string>>(new Set());
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedCodigos(new Set(data.map(item => item.codigo).filter(Boolean) as string[]));
+    } else {
+      setSelectedCodigos(new Set());
+    }
+  };
+
+  const handleSelectItem = (codigo: string, checked: boolean) => {
+    const newSelectedCodigos = new Set(selectedCodigos);
+    if (checked) {
+      newSelectedCodigos.add(codigo);
+    } else {
+      newSelectedCodigos.delete(codigo);
+    }
+    setSelectedCodigos(newSelectedCodigos);
+  };
+
+  const handleDeleteSelected = async () => {
+    // Esta funcionalidade precisa ser implementada no backend
+    // Por enquanto, apenas mostra uma mensagem
+    toast.info(`Funcionalidade de exclusão em desenvolvimento. ${selectedCodigos.size} item(s) selecionado(s).`);
+  };
+
+  const isAllSelected = data.length > 0 && selectedCodigos.size === data.length;
+  const isSomeSelected = selectedCodigos.size > 0;
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-8">
@@ -32,7 +64,19 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
 
   return (
     <div className="-mx-4 sm:mx-0">
-      <h3 className="text-xl font-bold mb-4 px-4 sm:px-0">Carteira Consolidada</h3>
+      <div className="flex justify-between items-center mb-4 px-4 sm:px-0">
+        <h3 className="text-xl font-bold">Carteira Consolidada</h3>
+        {isSomeSelected && (
+          <Button 
+            variant="destructive" 
+            size="sm"
+            onClick={handleDeleteSelected}
+          >
+            <Trash2 className="h-4 w-4 mr-2" />
+            Excluir Selecionados ({selectedCodigos.size})
+          </Button>
+        )}
+      </div>
       
       {/* Versão para mobile - cards em vez de tabela */}
       <div className="sm:hidden space-y-4 px-4">
@@ -43,7 +87,16 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
           return (
             <div key={index} className="bg-card border rounded-lg p-3 shadow-sm">
               <div className="flex justify-between items-start mb-2">
-                <h4 className="font-semibold text-lg">{item.codigo || '-'}</h4>
+                <div className="flex items-center gap-2">
+                  {item.codigo && (
+                    <Checkbox
+                      checked={selectedCodigos.has(item.codigo)}
+                      onCheckedChange={(checked) => item.codigo && handleSelectItem(item.codigo, checked as boolean)}
+                      aria-label={`Selecionar ${item.codigo}`}
+                    />
+                  )}
+                  <h4 className="font-semibold text-lg">{item.codigo || '-'}</h4>
+                </div>
                 <span className="text-sm px-2 py-0.5 rounded bg-muted">{item.Tipo || '-'}</span>
               </div>
               
@@ -102,6 +155,13 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">
+              <TableHead className="w-12">
+                <Checkbox
+                  checked={isAllSelected}
+                  onCheckedChange={handleSelectAll}
+                  aria-label="Selecionar todos"
+                />
+              </TableHead>
               <TableHead className="font-semibold">Código</TableHead>
               <TableHead className="font-semibold">Tipo</TableHead>
               <TableHead className="text-right font-semibold">Quantidade</TableHead>
@@ -120,6 +180,15 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
                 key={index} 
                 className="hover:bg-muted/50 transition-colors duration-200"
               >
+                <TableCell>
+                  {item.codigo && (
+                    <Checkbox
+                      checked={selectedCodigos.has(item.codigo)}
+                      onCheckedChange={(checked) => item.codigo && handleSelectItem(item.codigo, checked as boolean)}
+                      aria-label={`Selecionar ${item.codigo}`}
+                    />
+                  )}
+                </TableCell>
                 <TableCell className="font-medium">{item.codigo || '-'}</TableCell>
                 <TableCell>{item.Tipo || '-'}</TableCell>
                 <TableCell className="text-right">
