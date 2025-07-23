@@ -7,6 +7,7 @@ import { WalletIcon, Trash2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CarteiraAtualViewProps {
   data: CarteiraAtual[];
@@ -35,9 +36,26 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
   };
 
   const handleDeleteSelected = async () => {
-    // Esta funcionalidade precisa ser implementada no backend
-    // Por enquanto, apenas mostra uma mensagem
-    toast.info(`Funcionalidade de exclusão em desenvolvimento. ${selectedCodigos.size} item(s) selecionado(s).`);
+    if (selectedCodigos.size === 0) return;
+
+    try {
+      // Excluir todas as negociações dos códigos selecionados
+      const { error } = await supabase
+        .from('negociacoes')
+        .delete()
+        .in('Codigo', Array.from(selectedCodigos));
+
+      if (error) throw error;
+
+      toast.success(`${selectedCodigos.size} código(s) excluído(s) com sucesso!`);
+      setSelectedCodigos(new Set());
+      
+      // Refresh da página para atualizar os dados
+      window.location.reload();
+    } catch (error) {
+      console.error('Error deleting selected items:', error);
+      toast.error('Erro ao excluir itens selecionados');
+    }
   };
 
   const isAllSelected = data.length > 0 && selectedCodigos.size === data.length;
