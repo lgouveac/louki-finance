@@ -38,16 +38,74 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
   const handleDeleteSelected = async () => {
     if (selectedCodigos.size === 0) return;
 
+    const codigosArray = Array.from(selectedCodigos);
+    let deletedTables = [];
+    let errors = [];
+
     try {
-      // Excluir todas as negociações dos códigos selecionados
-      const { error } = await supabase
+      // Excluir de todas as tabelas relacionadas
+      
+      // 1. Excluir negociações
+      const { error: negociacoesError } = await supabase
         .from('negociacoes')
         .delete()
-        .in('Codigo', Array.from(selectedCodigos));
+        .in('Codigo', codigosArray);
+      
+      if (negociacoesError) {
+        errors.push('negociações');
+        console.error('Error deleting negociacoes:', negociacoesError);
+      } else {
+        deletedTables.push('negociações');
+      }
 
-      if (error) throw error;
+      // 2. Excluir posições atualizadas
+      const { error: posicoesError } = await supabase
+        .from('posicao_atualizada')
+        .delete()
+        .in('codigo', codigosArray);
+      
+      if (posicoesError) {
+        errors.push('posições');
+        console.error('Error deleting posicao_atualizada:', posicoesError);
+      } else {
+        deletedTables.push('posições');
+      }
 
-      toast.success(`${selectedCodigos.size} código(s) excluído(s) com sucesso!`);
+      // 3. Excluir ativos manuais
+      const { error: ativosError } = await supabase
+        .from('ativos_manuais')
+        .delete()
+        .in('codigo', codigosArray);
+      
+      if (ativosError) {
+        errors.push('ativos manuais');
+        console.error('Error deleting ativos_manuais:', ativosError);
+      } else {
+        deletedTables.push('ativos manuais');
+      }
+
+      // 4. Excluir proventos
+      const { error: proventosError } = await supabase
+        .from('proventos')
+        .delete()
+        .in('Produto', codigosArray);
+      
+      if (proventosError) {
+        errors.push('proventos');
+        console.error('Error deleting proventos:', proventosError);
+      } else {
+        deletedTables.push('proventos');
+      }
+
+      // Feedback para o usuário
+      if (deletedTables.length > 0) {
+        toast.success(`${selectedCodigos.size} código(s) excluído(s) de: ${deletedTables.join(', ')}`);
+      }
+      
+      if (errors.length > 0) {
+        toast.warning(`Erro ao excluir de: ${errors.join(', ')}`);
+      }
+
       setSelectedCodigos(new Set());
       
       // Refresh da página para atualizar os dados
