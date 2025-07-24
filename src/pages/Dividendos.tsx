@@ -1,17 +1,14 @@
 
 import { DividendosView } from "@/components/DividendosView";
-import { Header } from "@/components/Header";
 
 const Dividendos = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <div className="p-4 md:p-6">
-        <div className="mx-auto max-w-7xl">
-          <h1 className="text-2xl font-bold mb-6">Dividendos</h1>
-          <DividendosView />
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">Dividendos</h1>
+        <p className="text-muted-foreground">Acompanhe seus proventos recebidos</p>
       </div>
+      <DividendosView />
     </div>
   );
 };

@@ -7,6 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 import { AuthProvider } from "@/hooks/useAuth";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
+import { Header } from "@/components/Header";
 
 // Pages
 import Index from "./pages/Index";
@@ -32,47 +35,31 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={
+            <Route path="/*" element={
               <ProtectedRoute>
-                <Index />
+                <SidebarProvider>
+                  <div className="min-h-screen flex w-full">
+                    <AppSidebar />
+                    <div className="flex-1 flex flex-col">
+                      <Header />
+                      <main className="flex-1 p-6">
+                        <Routes>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/carteira" element={<CarteiraConsolidada />} />
+                          <Route path="/carteira-ideal" element={<CarteiraIdeal />} />
+                          <Route path="/dividendos" element={<Dividendos />} />
+                          <Route path="/importacao" element={<Importacao />} />
+                          <Route path="/ativos-manuais" element={<AtivosManuais />} />
+                          <Route path="/alteracao-pm" element={<AlteracaoPM />} />
+                          <Route path="/analise-economica" element={<AnaliseEconomica />} />
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                      </main>
+                    </div>
+                  </div>
+                </SidebarProvider>
               </ProtectedRoute>
             } />
-            <Route path="/carteira" element={
-              <ProtectedRoute>
-                <CarteiraConsolidada />
-              </ProtectedRoute>
-            } />
-            <Route path="/carteira-ideal" element={
-              <ProtectedRoute>
-                <CarteiraIdeal />
-              </ProtectedRoute>
-            } />
-            <Route path="/dividendos" element={
-              <ProtectedRoute>
-                <Dividendos />
-              </ProtectedRoute>
-            } />
-            <Route path="/importacao" element={
-              <ProtectedRoute>
-                <Importacao />
-              </ProtectedRoute>
-            } />
-            <Route path="/ativos-manuais" element={
-              <ProtectedRoute>
-                <AtivosManuais />
-              </ProtectedRoute>
-            } />
-            <Route path="/alteracao-pm" element={
-              <ProtectedRoute>
-                <AlteracaoPM />
-              </ProtectedRoute>
-            } />
-            <Route path="/analise-economica" element={
-              <ProtectedRoute>
-                <AnaliseEconomica />
-              </ProtectedRoute>
-            } />
-            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

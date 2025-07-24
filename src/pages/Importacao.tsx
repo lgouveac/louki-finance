@@ -1,14 +1,15 @@
 import { ImportacaoView } from "@/components/ImportacaoView";
-import { Header } from "@/components/Header";
+
 const Importacao = () => {
-  return <div className="min-h-screen bg-background">
-      <Header />
-      <div className="p-4 md:p-6">
-        <div className="mx-auto max-w-7xl">
-          
-          <ImportacaoView />
-        </div>
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">Importação</h1>
+        <p className="text-muted-foreground">Importe dados de corretoras</p>
       </div>
-    </div>;
+      <ImportacaoView />
+    </div>
+  );
 };
+
 export default Importacao;
