@@ -1,13 +1,13 @@
 
 import { CarteiraAtual } from "@/types/stock";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { WalletIcon, Trash2 } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { StockCard } from "./StockCard";
+import { SortControls, SortField, SortDirection } from "./SortControls";
 
 interface CarteiraAtualViewProps {
   data: CarteiraAtual[];
@@ -16,6 +16,69 @@ interface CarteiraAtualViewProps {
 
 export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
   const [selectedCodigos, setSelectedCodigos] = useState<Set<string>>(new Set());
+  const [sortField, setSortField] = useState<SortField>('valor_atual');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+
+  // Função de ordenação usando useMemo para otimização
+  const sortedData = useMemo(() => {
+    if (!data) return [];
+
+    const sorted = [...data].sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+
+      switch (sortField) {
+        case 'codigo':
+          aValue = a.codigo || '';
+          bValue = b.codigo || '';
+          return sortDirection === 'asc' 
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        
+        case 'valor_atual':
+          aValue = a.valor_atual || 0;
+          bValue = b.valor_atual || 0;
+          break;
+        
+        case 'valor_investido':
+          aValue = a.valor_investido || 0;
+          bValue = b.valor_investido || 0;
+          break;
+        
+        case 'rentabilidade_perc':
+          aValue = a.rentabilidade_perc || -Infinity;
+          bValue = b.rentabilidade_perc || -Infinity;
+          break;
+        
+        case 'rentabilidade_com_proventos_perc':
+          aValue = a.rentabilidade_com_proventos_perc || -Infinity;
+          bValue = b.rentabilidade_com_proventos_perc || -Infinity;
+          break;
+        
+        case 'proventos_recebidos':
+          aValue = a.proventos_recebidos || 0;
+          bValue = b.proventos_recebidos || 0;
+          break;
+        
+        case 'quantidade_total':
+          aValue = a.quantidade_total || 0;
+          bValue = b.quantidade_total || 0;
+          break;
+        
+        default:
+          aValue = 0;
+          bValue = 0;
+      }
+
+      if (sortDirection === 'asc') {
+        return aValue - bValue;
+      } else {
+        return bValue - aValue;
+      }
+    });
+
+    return sorted;
+  }, [data, sortField, sortDirection]);
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -33,6 +96,11 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
       newSelectedCodigos.delete(codigo);
     }
     setSelectedCodigos(newSelectedCodigos);
+  };
+
+  const handleSortChange = (field: SortField, direction: SortDirection) => {
+    setSortField(field);
+    setSortDirection(direction);
   };
 
   const handleDeleteSelected = async () => {
@@ -118,6 +186,7 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
 
   const isAllSelected = data.length > 0 && selectedCodigos.size === data.length;
   const isSomeSelected = selectedCodigos.size > 0;
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-8">
@@ -139,166 +208,48 @@ export function CarteiraAtualView({ data, isLoading }: CarteiraAtualViewProps) {
   }
 
   return (
-    <div className="-mx-4 sm:mx-0">
-      <div className="flex justify-between items-center mb-4 px-4 sm:px-0">
-        <h3 className="text-xl font-bold">Carteira Consolidada</h3>
-        {isSomeSelected && (
-          <Button 
-            variant="destructive" 
-            size="sm"
-            onClick={handleDeleteSelected}
-          >
-            <Trash2 className="h-4 w-4 mr-2" />
-            Excluir Selecionados ({selectedCodigos.size})
-          </Button>
-        )}
+    <div className="space-y-6">
+      {/* Header com título e ações */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h3 className="text-2xl font-bold">Carteira Consolidada</h3>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={isAllSelected}
+            onCheckedChange={handleSelectAll}
+            aria-label="Selecionar todos"
+          />
+          <span className="text-sm text-muted-foreground">Selecionar todos</span>
+          {isSomeSelected && (
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={handleDeleteSelected}
+              className="ml-4"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Excluir ({selectedCodigos.size})
+            </Button>
+          )}
+        </div>
       </div>
-      
-      {/* Versão para mobile - cards em vez de tabela */}
-      <div className="sm:hidden space-y-4 px-4">
-        {data.map((item, index) => {
-          const isRentabilidadePositive = item.rentabilidade_perc && item.rentabilidade_perc > 0;
-          const isRentabilidadeComProventosPositive = item.rentabilidade_com_proventos_perc && item.rentabilidade_com_proventos_perc > 0;
-          
-          return (
-            <div key={index} className="bg-card border rounded-lg p-3 shadow-sm">
-              <div className="flex justify-between items-start mb-2">
-                <div className="flex items-center gap-2">
-                  {item.codigo && (
-                    <Checkbox
-                      checked={selectedCodigos.has(item.codigo)}
-                      onCheckedChange={(checked) => item.codigo && handleSelectItem(item.codigo, checked as boolean)}
-                      aria-label={`Selecionar ${item.codigo}`}
-                    />
-                  )}
-                  <h4 className="font-semibold text-lg">{item.codigo || '-'}</h4>
-                </div>
-                <span className="text-sm px-2 py-0.5 rounded bg-muted">{item.Tipo || '-'}</span>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <p className="text-muted-foreground">Quantidade</p>
-                  <p className="font-medium">{item.quantidade_total?.toLocaleString('pt-BR') || '-'}</p>
-                </div>
-                
-                <div>
-                  <p className="text-muted-foreground">Preço Médio</p>
-                  <p className="font-medium">{item.preco_medio ? formatCurrency(item.preco_medio) : '-'}</p>
-                </div>
-                
-                <div>
-                  <p className="text-muted-foreground">Preço Atual</p>
-                  <p className="font-medium">{item.preco_atual ? formatCurrency(item.preco_atual) : '-'}</p>
-                </div>
-                
-                <div>
-                  <p className="text-muted-foreground">Valor Investido</p>
-                  <p className="font-medium">{item.valor_investido ? formatCurrency(item.valor_investido) : '-'}</p>
-                </div>
-                
-                <div>
-                  <p className="text-muted-foreground">Valor Atual</p>
-                  <p className="font-medium">{item.valor_atual ? formatCurrency(item.valor_atual) : '-'}</p>
-                </div>
-                
-                <div>
-                  <p className="text-muted-foreground">Rentabilidade</p>
-                  <p className={`font-medium ${isRentabilidadePositive ? 'text-stock-positive' : item.rentabilidade_perc && item.rentabilidade_perc < 0 ? 'text-stock-negative' : ''}`}>
-                    {item.rentabilidade_perc ? `${item.rentabilidade_perc.toFixed(2)}%` : '-'}
-                  </p>
-                </div>
-                
-                <div>
-                  <p className="text-muted-foreground">Com Proventos</p>
-                  <p className={`font-medium ${isRentabilidadeComProventosPositive ? 'text-stock-positive' : item.rentabilidade_com_proventos_perc && item.rentabilidade_com_proventos_perc < 0 ? 'text-stock-negative' : ''}`}>
-                    {item.rentabilidade_com_proventos_perc ? `${item.rentabilidade_com_proventos_perc.toFixed(2)}%` : '-'}
-                  </p>
-                </div>
-                
-                <div>
-                  <p className="text-muted-foreground">Proventos</p>
-                  <p className="font-medium text-amber-500">{item.proventos_recebidos ? formatCurrency(item.proventos_recebidos) : '-'}</p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-      
-      {/* Versão para desktop - tabela tradicional */}
-      <div className="hidden sm:block overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="w-12">
-                <Checkbox
-                  checked={isAllSelected}
-                  onCheckedChange={handleSelectAll}
-                  aria-label="Selecionar todos"
-                />
-              </TableHead>
-              <TableHead className="font-semibold">Código</TableHead>
-              <TableHead className="font-semibold">Tipo</TableHead>
-              <TableHead className="text-right font-semibold">Quantidade</TableHead>
-              <TableHead className="text-right font-semibold">Preço Médio</TableHead>
-              <TableHead className="text-right font-semibold">Preço Atual</TableHead>
-              <TableHead className="text-right font-semibold">Valor Investido</TableHead>
-              <TableHead className="text-right font-semibold">Valor Atual</TableHead>
-              <TableHead className="text-right font-semibold">Rentabilidade (%)</TableHead>
-              <TableHead className="text-right font-semibold">Rentabilidade c/ Proventos (%)</TableHead>
-              <TableHead className="text-right font-semibold">Proventos Recebidos</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((item, index) => (
-              <TableRow 
-                key={index} 
-                className="hover:bg-muted/50 transition-colors duration-200"
-              >
-                <TableCell>
-                  {item.codigo && (
-                    <Checkbox
-                      checked={selectedCodigos.has(item.codigo)}
-                      onCheckedChange={(checked) => item.codigo && handleSelectItem(item.codigo, checked as boolean)}
-                      aria-label={`Selecionar ${item.codigo}`}
-                    />
-                  )}
-                </TableCell>
-                <TableCell className="font-medium">{item.codigo || '-'}</TableCell>
-                <TableCell>{item.Tipo || '-'}</TableCell>
-                <TableCell className="text-right">
-                  {item.quantidade_total?.toLocaleString('pt-BR') || '-'}
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.preco_medio ? formatCurrency(item.preco_medio) : '-'}
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.preco_atual ? formatCurrency(item.preco_atual) : '-'}
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.valor_investido ? formatCurrency(item.valor_investido) : '-'}
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.valor_atual ? formatCurrency(item.valor_atual) : '-'}
-                </TableCell>
-                <TableCell className={`text-right ${item.rentabilidade_perc && item.rentabilidade_perc > 0 ? 'text-stock-positive' : item.rentabilidade_perc && item.rentabilidade_perc < 0 ? 'text-stock-negative' : ''}`}>
-                  {item.rentabilidade_perc
-                    ? `${item.rentabilidade_perc.toFixed(2)}%`
-                    : '-'}
-                </TableCell>
-                <TableCell className={`text-right ${item.rentabilidade_com_proventos_perc && item.rentabilidade_com_proventos_perc > 0 ? 'text-stock-positive' : item.rentabilidade_com_proventos_perc && item.rentabilidade_com_proventos_perc < 0 ? 'text-stock-negative' : ''}`}>
-                  {item.rentabilidade_com_proventos_perc
-                    ? `${item.rentabilidade_com_proventos_perc.toFixed(2)}%`
-                    : '-'}
-                </TableCell>
-                <TableCell className="text-right">
-                  {item.proventos_recebidos ? formatCurrency(item.proventos_recebidos) : '-'}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+
+      {/* Controles de ordenação */}
+      <SortControls
+        sortField={sortField}
+        sortDirection={sortDirection}
+        onSortChange={handleSortChange}
+      />
+
+      {/* Grid de cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {sortedData.map((item, index) => (
+          <StockCard
+            key={item.codigo || index}
+            item={item}
+            isSelected={item.codigo ? selectedCodigos.has(item.codigo) : false}
+            onSelect={handleSelectItem}
+          />
+        ))}
       </div>
     </div>
   );
