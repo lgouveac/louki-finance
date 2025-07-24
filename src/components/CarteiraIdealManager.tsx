@@ -189,6 +189,21 @@ export function CarteiraIdealManager() {
                     <div className={`text-sm font-medium ${(item.diferenca_percentual || 0) > 0 ? 'text-green-600' : (item.diferenca_percentual || 0) < 0 ? 'text-red-600' : 'text-gray-600'}`}>
                       {(item.diferenca_percentual || 0) > 0 ? '+' : ''}{(item.diferenca_percentual || 0).toFixed(1)}%
                     </div>
+                    {(() => {
+                      const valorTotalCarteira = carteiraComparativa.reduce((sum, c) => sum + (c.valor_atual || 0), 0);
+                      const valorIdeal = valorTotalCarteira * ((item.percentual_ideal || 0) / 100);
+                      const valorAtual = item.valor_atual || 0;
+                      const diferenca = valorIdeal - valorAtual;
+                      
+                      if (Math.abs(diferenca) > 10) { // Só mostra se diferença > R$10
+                        return (
+                          <div className={`text-xs ${diferenca > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            {diferenca > 0 ? 'Aportar' : 'Vender'}: R$ {Math.abs(diferenca).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()}
                   </div>
                   
                   <Badge variant="outline" className={getActionColor(item.acao_sugerida)}>
