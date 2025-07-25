@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProventosMensaisView } from "@/components/ProventosMensaisView";
 import { ProventosDetalhados } from "@/components/ProventosDetalhados";
 import { ProventosPorAnoView } from "@/components/ProventosPorAnoView";
+import { DYCalculator } from "@/components/DYCalculator";
 import { getProventosMensais, getProventosRecebidos, getDividendYieldAnual } from "@/services/viewsService";
 
 export function DividendosView() {
@@ -26,7 +27,7 @@ export function DividendosView() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="mensais" className="w-full">
-        <TabsList className="grid w-full grid-cols-1 md:grid-cols-3 h-auto">
+        <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
           <TabsTrigger value="mensais" className="text-xs md:text-sm px-2 py-2">
             Proventos Mensais
           </TabsTrigger>
@@ -35,6 +36,9 @@ export function DividendosView() {
           </TabsTrigger>
           <TabsTrigger value="dy-anual" className="text-xs md:text-sm px-2 py-2">
             DY por Ano
+          </TabsTrigger>
+          <TabsTrigger value="calculadora" className="text-xs md:text-sm px-2 py-2">
+            Calculadora DY
           </TabsTrigger>
         </TabsList>
         
@@ -57,6 +61,10 @@ export function DividendosView() {
             data={dividendYieldAnual} 
             isLoading={isLoadingDY} 
           />
+        </TabsContent>
+        
+        <TabsContent value="calculadora" className="space-y-4">
+          <DYCalculator />
         </TabsContent>
       </Tabs>
     </div>
