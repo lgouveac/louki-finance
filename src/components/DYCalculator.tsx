@@ -1,14 +1,24 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
-import { Calculator } from "lucide-react";
+import { Calculator, TrendingUp } from "lucide-react";
+import { getDashboardData } from "@/services/viewsService";
 
 export function DYCalculator() {
   const [targetDY, setTargetDY] = useState<number>(0);
   const [investmentAmount, setInvestmentAmount] = useState<number>(0);
   const [desiredAnnualIncome, setDesiredAnnualIncome] = useState<number>(0);
+
+  const { data: dashboardData } = useQuery({
+    queryKey: ['dashboard-data'],
+    queryFn: getDashboardData,
+  });
+
+  const totalPortfolioValue = dashboardData?.reduce((sum, item) => sum + (item.valor_total || 0), 0) || 0;
 
   const calculateAnnualEarnings = () => {
     return (investmentAmount * targetDY) / 100;
@@ -25,6 +35,10 @@ export function DYCalculator() {
 
   const calculateMonthlyIncome = () => {
     return desiredAnnualIncome / 12;
+  };
+
+  const useCurrentPortfolioValue = () => {
+    setInvestmentAmount(totalPortfolioValue);
   };
 
   return (
@@ -56,14 +70,31 @@ export function DYCalculator() {
 
             <div className="space-y-2">
               <Label htmlFor="investment">Valor do Investimento</Label>
-              <Input
-                id="investment"
-                type="number"
-                step="0.01"
-                placeholder="Ex: 100000"
-                value={investmentAmount || ""}
-                onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="investment"
+                  type="number"
+                  step="0.01"
+                  placeholder="Ex: 100000"
+                  value={investmentAmount || ""}
+                  onChange={(e) => setInvestmentAmount(Number(e.target.value))}
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={useCurrentPortfolioValue}
+                  className="whitespace-nowrap"
+                >
+                  <TrendingUp className="h-4 w-4 mr-1" />
+                  Usar Atual
+                </Button>
+              </div>
+              {totalPortfolioValue > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Valor atual da carteira: {formatCurrency(totalPortfolioValue)}
+                </p>
+              )}
             </div>
 
             <div className="pt-4 border-t space-y-3">
@@ -137,39 +168,6 @@ export function DYCalculator() {
         </Card>
       </div>
 
-      {/* Summary Card */}
-      {(investmentAmount > 0 || desiredAnnualIncome > 0) && targetDY > 0 && (
-        <Card className="bg-muted/50">
-          <CardHeader>
-            <CardTitle>Resumo dos Cálculos</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {investmentAmount > 0 && (
-                <div className="space-y-2">
-                  <h4 className="font-medium">Cenário 1: Investimento de {formatCurrency(investmentAmount)}</h4>
-                  <div className="text-sm space-y-1">
-                    <div>• DY: {targetDY}%</div>
-                    <div>• Rendimento anual: {formatCurrency(calculateAnnualEarnings())}</div>
-                    <div>• Rendimento mensal: {formatCurrency(calculateMonthlyEarnings())}</div>
-                  </div>
-                </div>
-              )}
-              
-              {desiredAnnualIncome > 0 && (
-                <div className="space-y-2">
-                  <h4 className="font-medium">Cenário 2: Meta de {formatCurrency(desiredAnnualIncome)}/ano</h4>
-                  <div className="text-sm space-y-1">
-                    <div>• DY necessário: {targetDY}%</div>
-                    <div>• Investimento necessário: {formatCurrency(calculateRequiredInvestment())}</div>
-                    <div>• Renda mensal: {formatCurrency(calculateMonthlyIncome())}</div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 }
