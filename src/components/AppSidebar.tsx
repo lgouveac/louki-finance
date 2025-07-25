@@ -55,7 +55,7 @@ export function AppSidebar() {
 
   const isActive = (path: string) => currentPath === path;
   const getNavCls = ({ isActive: active }: { isActive: boolean }) =>
-    active ? "bg-primary text-primary-foreground" : "hover:bg-accent";
+    active ? "nav-item-active" : "nav-item-hover";
 
   const handleLogout = async () => {
     await signOut();
@@ -73,10 +73,10 @@ export function AppSidebar() {
   );
 
   return (
-    <Sidebar className={collapsed ? "w-14" : "w-64"} collapsible="icon">
+    <Sidebar className={`sidebar-glass ${collapsed ? "w-14" : "w-64"}`} collapsible="icon">
       {/* Logo */}
-      <div className="p-4 border-b">
-        <div className="flex items-center gap-2">
+      <div className="p-4 border-b border-border/20">
+        <div className={`flex items-center gap-2 ${!collapsed ? 'glass-card p-3' : ''}`}>
           <AppLogo size="small" className="mb-0" />
           {!collapsed && (
             <h2 className="text-lg font-semibold">Investimentos</h2>
@@ -123,11 +123,11 @@ export function AppSidebar() {
       </SidebarContent>
 
       {/* Footer com usuário */}
-      <SidebarFooter className="border-t p-4">
+      <SidebarFooter className="border-t border-border/20 p-4">
         {user && (
           <div className="space-y-2">
             {!collapsed && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground px-2">
+              <div className="glass-card p-3 flex items-center gap-2 text-sm">
                 <User className="h-4 w-4" />
                 <span className="truncate">{user.email}</span>
               </div>
@@ -136,7 +136,7 @@ export function AppSidebar() {
               variant="outline" 
               size="sm" 
               onClick={handleLogout} 
-              className="w-full justify-start"
+              className="w-full justify-start glass-button-secondary"
             >
               <LogOut className="h-4 w-4" />
               {!collapsed && <span className="ml-2">Sair</span>}

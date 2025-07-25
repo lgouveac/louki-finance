@@ -45,7 +45,7 @@ export function DYCalculator() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Investment Calculator */}
-        <Card>
+        <Card className="glass-card-elevated">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calculator className="h-5 w-5" />
@@ -84,7 +84,7 @@ export function DYCalculator() {
                   variant="outline" 
                   size="sm"
                   onClick={useCurrentPortfolioValue}
-                  className="whitespace-nowrap"
+                  className="whitespace-nowrap glass-button-secondary"
                 >
                   <TrendingUp className="h-4 w-4 mr-1" />
                   Usar Atual
@@ -115,7 +115,7 @@ export function DYCalculator() {
         </Card>
 
         {/* Required Investment Calculator */}
-        <Card>
+        <Card className="glass-card-elevated">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calculator className="h-5 w-5" />
