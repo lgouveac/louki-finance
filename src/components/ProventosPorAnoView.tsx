@@ -1,6 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { getDividendYieldAnual, DividendYieldAnual, getProventosRecebidos, getDashboardData } from "@/services/viewsService";
+import { getDividendYieldAnual, DividendYieldAnual, getProventosMensais, getDashboardData } from "@/services/viewsService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,10 +12,10 @@ interface ProventosPorAnoViewProps {
 }
 
 export function ProventosPorAnoView({ data, isLoading }: ProventosPorAnoViewProps) {
-  // Buscar dados para o DY atual
-  const { data: proventosRecebidos = [] } = useQuery({
-    queryKey: ['proventos-recebidos'],
-    queryFn: getProventosRecebidos,
+  // Buscar dados mensais para o DY atual
+  const { data: proventosMensais = [] } = useQuery({
+    queryKey: ['proventos-mensais'],
+    queryFn: getProventosMensais,
   });
 
   const { data: dashboardData = [] } = useQuery({
@@ -36,19 +36,30 @@ export function ProventosPorAnoView({ data, isLoading }: ProventosPorAnoViewProp
     return `${value.toFixed(2)}%`;
   };
 
-  // Calcular DY atual baseado nos últimos 12 meses
+  // Calcular DY atual baseado nos últimos 12 meses usando dados mensais
   const calculateCurrentDY = () => {
     const now = new Date();
-    const twelveMonthsAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // getMonth() retorna 0-11, precisamos 1-12
+    
+    // Criar lista dos últimos 12 meses no formato "YYYY-MM"
+    const last12Months: string[] = [];
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(currentYear, currentMonth - 1 - i, 1);
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      last12Months.push(`${year}-${month}`);
+    }
     
     // Filtrar proventos dos últimos 12 meses
-    const recentProventos = proventosRecebidos.filter(provento => {
-      const proventoDate = new Date(provento.Data);
-      return proventoDate >= twelveMonthsAgo && proventoDate <= now;
-    });
+    const recentProventos = proventosMensais.filter(provento => 
+      last12Months.includes(provento.mes_ano)
+    );
 
     // Somar proventos dos últimos 12 meses
-    const totalProventosRecentes = recentProventos.reduce((sum, provento) => sum + (provento.valor || 0), 0);
+    const totalProventosRecentes = recentProventos.reduce((sum, provento) => 
+      sum + (provento.valor_total_mensal || 0), 0
+    );
     
     // Buscar valor total atual da carteira
     const valorTotalAtual = dashboardData.reduce((sum, item) => sum + (item.valor_total || 0), 0);
