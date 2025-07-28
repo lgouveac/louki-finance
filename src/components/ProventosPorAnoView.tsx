@@ -36,30 +36,39 @@ export function ProventosPorAnoView({ data, isLoading }: ProventosPorAnoViewProp
     return `${value.toFixed(2)}%`;
   };
 
-  // Calcular DY atual baseado nos últimos 12 meses usando dados mensais
+  // Calcular DY atual baseado nos últimos 12 meses - mesma lógica do ProventosDashboard
   const calculateCurrentDY = () => {
     const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1; // getMonth() retorna 0-11, precisamos 1-12
-    
-    // Criar lista dos últimos 12 meses no formato "YYYY-MM"
-    const last12Months: string[] = [];
-    for (let i = 0; i < 12; i++) {
-      const date = new Date(currentYear, currentMonth - 1 - i, 1);
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      last12Months.push(`${year}-${month}`);
-    }
-    
-    // Filtrar proventos dos últimos 12 meses
-    const recentProventos = proventosMensais.filter(provento => 
-      last12Months.includes(provento.mes_ano)
-    );
+    const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 12, 1);
 
-    // Somar proventos dos últimos 12 meses
-    const totalProventosRecentes = recentProventos.reduce((sum, provento) => 
-      sum + (provento.valor_total_mensal || 0), 0
-    );
+    let totalProventosRecentes = 0;
+
+    proventosMensais.forEach(item => {
+      if (!item.mes_ano || !item.valor_total_mensal) return;
+
+      // Parse mes_ano corretamente baseado no formato (mesma lógica do ProventosDashboard)
+      let ano: number, mes: number;
+      
+      if (item.mes_ano.includes('-')) {
+        // Formato YYYY-MM (como vem do banco)
+        const [anoStr, mesStr] = item.mes_ano.split('-');
+        ano = parseInt(anoStr);
+        mes = parseInt(mesStr);
+      } else if (item.mes_ano.includes('/')) {
+        // Formato MM/YYYY 
+        const [mesStr, anoStr] = item.mes_ano.split('/');
+        mes = parseInt(mesStr);
+        ano = parseInt(anoStr);
+      } else {
+        return;
+      }
+
+      // Para últimos 12 meses
+      const itemDate = new Date(ano, mes - 1, 1);
+      if (itemDate >= twelveMonthsAgo) {
+        totalProventosRecentes += item.valor_total_mensal;
+      }
+    });
     
     // Buscar valor total atual da carteira
     const valorTotalAtual = dashboardData.reduce((sum, item) => sum + (item.valor_total || 0), 0);
