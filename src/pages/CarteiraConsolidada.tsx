@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, X } from "lucide-react";
+import { Search, X, LayoutGrid, List } from "lucide-react";
 const CarteiraConsolidada = () => {
   const [summary, setSummary] = useState<PortfolioSummary>({
     totalValue: 0,
@@ -22,6 +22,7 @@ const CarteiraConsolidada = () => {
   const [tipoFilter, setTipoFilter] = useState<string>("");
   const [tipoOptions, setTipoOptions] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   useEffect(() => {
     async function fetchData() {
       try {
@@ -64,29 +65,51 @@ const CarteiraConsolidada = () => {
     <div className="space-y-6">
       <StockHeader summary={summary} />
       
-      {/* Ícones de busca e filtro */}
-      <div className="flex items-center gap-3">
-        <Button 
-          variant={searchQuery ? "default" : "outline"} 
-          size="sm" 
-          onClick={() => setShowFilters(!showFilters)} 
-          className="flex items-center gap-2"
-        >
-          <Search className="h-4 w-4" />
-          Buscar
-        </Button>
-
-        {hasActiveFilters && (
+      {/* Ícones de busca, filtro e visualização */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
           <Button 
-            variant="ghost" 
+            variant={searchQuery ? "default" : "outline"} 
             size="sm" 
-            onClick={clearFilters} 
-            className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            onClick={() => setShowFilters(!showFilters)} 
+            className="flex items-center gap-2"
           >
-            <X className="h-4 w-4" />
-            Limpar
+            <Search className="h-4 w-4" />
+            Buscar
           </Button>
-        )}
+
+          {hasActiveFilters && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={clearFilters} 
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4" />
+              Limpar
+            </Button>
+          )}
+        </div>
+
+        {/* Toggle de visualização */}
+        <div className="flex items-center gap-2 border rounded-md p-1">
+          <Button
+            variant={viewMode === 'grid' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setViewMode('grid')}
+            className="h-8 px-3"
+          >
+            <LayoutGrid className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={viewMode === 'table' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setViewMode('table')}
+            className="h-8 px-3"
+          >
+            <List className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Box expansível de filtros */}
@@ -156,7 +179,11 @@ const CarteiraConsolidada = () => {
         </Card>
       )}
       
-      <DataTabView searchQuery={searchQuery} tipoFilter={tipoFilter === "_all" ? "" : tipoFilter} />
+      <DataTabView 
+        searchQuery={searchQuery} 
+        tipoFilter={tipoFilter === "_all" ? "" : tipoFilter}
+        viewMode={viewMode}
+      />
     </div>
   );
 };

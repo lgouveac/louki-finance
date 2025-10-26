@@ -1,5 +1,6 @@
 
 import { CarteiraAtualView } from "@/components/CarteiraAtualView";
+import { CarteiraAtualTableView } from "@/components/CarteiraAtualTableView";
 import { useQuery } from "@tanstack/react-query";
 import { getCarteiraAtual } from "@/services/viewsService";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,9 +9,10 @@ import { CarteiraAtual } from "@/types/stock";
 interface DataTabViewProps {
   searchQuery?: string;
   tipoFilter?: string;
+  viewMode?: 'grid' | 'table';
 }
 
-export function DataTabView({ searchQuery = "", tipoFilter = "" }: DataTabViewProps) {
+export function DataTabView({ searchQuery = "", tipoFilter = "", viewMode = 'grid' }: DataTabViewProps) {
   const { 
     data: carteiraAtual = [], 
     isLoading: isLoadingCarteira 
@@ -35,7 +37,11 @@ export function DataTabView({ searchQuery = "", tipoFilter = "" }: DataTabViewPr
   return (
     <Card className="shadow-md mb-6">
       <CardContent className="p-4">
-        <CarteiraAtualView data={filteredData} isLoading={isLoadingCarteira} />
+        {viewMode === 'grid' ? (
+          <CarteiraAtualView data={filteredData} isLoading={isLoadingCarteira} />
+        ) : (
+          <CarteiraAtualTableView data={filteredData} isLoading={isLoadingCarteira} />
+        )}
       </CardContent>
     </Card>
   );
