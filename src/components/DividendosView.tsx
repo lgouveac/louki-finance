@@ -6,6 +6,7 @@ import { ProventosMensaisView } from "@/components/ProventosMensaisView";
 import { ProventosDetalhados } from "@/components/ProventosDetalhados";
 import { ProventosPorAnoView } from "@/components/ProventosPorAnoView";
 import { DYCalculator } from "@/components/DYCalculator";
+import { InserirProventoForm } from "@/components/InserirProventoForm";
 import { getProventosMensais, getProventosRecebidos, getDividendYieldAnual } from "@/services/viewsService";
 
 export function DividendosView() {
@@ -26,6 +27,9 @@ export function DividendosView() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end">
+        <InserirProventoForm />
+      </div>
       <Tabs defaultValue="mensais" className="w-full">
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto">
           <TabsTrigger value="mensais" className="text-xs md:text-sm px-2 py-2">
