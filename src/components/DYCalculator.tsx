@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 import { Calculator, TrendingUp } from "lucide-react";
-import { getDashboardData } from "@/services/viewsService";
+import { getDashboardData, getProventosMensais } from "@/services/viewsService";
 
 export function DYCalculator() {
   const [targetDY, setTargetDY] = useState<number>(0);
@@ -16,6 +16,11 @@ export function DYCalculator() {
   const { data: dashboardData } = useQuery({
     queryKey: ['dashboard-data'],
     queryFn: getDashboardData,
+  });
+
+  const { data: proventosMensais = [] } = useQuery({
+    queryKey: ['proventos-mensais'],
+    queryFn: getProventosMensais,
   });
 
   const totalPortfolioValue = dashboardData?.reduce((sum, item) => sum + (item.valor_total || 0), 0) || 0;
@@ -41,6 +46,51 @@ export function DYCalculator() {
     setInvestmentAmount(totalPortfolioValue);
   };
 
+  // Calcular DY atual baseado nos últimos 12 meses
+  const calculateCurrentDY = () => {
+    const now = new Date();
+    const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 12, 1);
+    
+    let totalProventosRecentes = 0;
+
+    proventosMensais.forEach(item => {
+      if (!item.mes_ano || !item.valor_total_mensal) return;
+
+      // Parse mes_ano corretamente baseado no formato
+      let ano: number, mes: number;
+      
+      if (item.mes_ano.includes('-')) {
+        // Formato YYYY-MM (como vem do banco)
+        const [anoStr, mesStr] = item.mes_ano.split('-');
+        ano = parseInt(anoStr);
+        mes = parseInt(mesStr);
+      } else if (item.mes_ano.includes('/')) {
+        // Formato MM/YYYY 
+        const [mesStr, anoStr] = item.mes_ano.split('/');
+        mes = parseInt(mesStr);
+        ano = parseInt(anoStr);
+      } else {
+        return;
+      }
+
+      // Para últimos 12 meses
+      const itemDate = new Date(ano, mes - 1, 1);
+      if (itemDate >= twelveMonthsAgo) {
+        totalProventosRecentes += item.valor_total_mensal;
+      }
+    });
+    
+    // Calcular DY atual
+    const dyAtual = totalPortfolioValue > 0 ? (totalProventosRecentes / totalPortfolioValue) * 100 : 0;
+    
+    return dyAtual;
+  };
+
+  const useCurrentDY = () => {
+    const dy = calculateCurrentDY();
+    setTargetDY(dy);
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -58,14 +108,31 @@ export function DYCalculator() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="target-dy">DY Alvo Anual (%)</Label>
-              <Input
-                id="target-dy"
-                type="number"
-                step="0.01"
-                placeholder="Ex: 6.5"
-                value={targetDY || ""}
-                onChange={(e) => setTargetDY(Number(e.target.value))}
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="target-dy"
+                  type="number"
+                  step="0.01"
+                  placeholder="Ex: 6.5"
+                  value={targetDY || ""}
+                  onChange={(e) => setTargetDY(Number(e.target.value))}
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={useCurrentDY}
+                  className="whitespace-nowrap glass-button-secondary"
+                >
+                  <TrendingUp className="h-4 w-4 mr-1" />
+                  Usar Atual
+                </Button>
+              </div>
+              {calculateCurrentDY() > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  DY atual (últimos 12 meses): {calculateCurrentDY().toFixed(2)}%
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -128,14 +195,31 @@ export function DYCalculator() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="target-dy-2">DY Esperado (%)</Label>
-              <Input
-                id="target-dy-2"
-                type="number"
-                step="0.01"
-                placeholder="Ex: 6.5"
-                value={targetDY || ""}
-                onChange={(e) => setTargetDY(Number(e.target.value))}
-              />
+              <div className="flex gap-2">
+                <Input
+                  id="target-dy-2"
+                  type="number"
+                  step="0.01"
+                  placeholder="Ex: 6.5"
+                  value={targetDY || ""}
+                  onChange={(e) => setTargetDY(Number(e.target.value))}
+                />
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="sm"
+                  onClick={useCurrentDY}
+                  className="whitespace-nowrap glass-button-secondary"
+                >
+                  <TrendingUp className="h-4 w-4 mr-1" />
+                  Usar Atual
+                </Button>
+              </div>
+              {calculateCurrentDY() > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  DY atual (últimos 12 meses): {calculateCurrentDY().toFixed(2)}%
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">

@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Navigate } from 'react-router-dom';
-import { AppLogo } from '@/components/AppLogo';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -73,7 +72,6 @@ const Auth = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4 overflow-y-auto">
       <Card className="w-full max-w-md border-0 bg-transparent shadow-none">
         <CardHeader className="text-center pb-0 pt-6">
-          <AppLogo />
           <CardTitle className="text-2xl mt-1">
             {isLogin ? 'Entrar' : 'Criar Conta'}
           </CardTitle>

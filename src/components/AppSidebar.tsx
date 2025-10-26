@@ -26,7 +26,6 @@ import {
   SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { AppLogo } from "@/components/AppLogo";
 
 const portfolioItems = [
   { title: "Dashboard", url: "/", icon: HomeIcon },
@@ -74,16 +73,6 @@ export function AppSidebar() {
 
   return (
     <Sidebar className={`sidebar-glass ${collapsed ? "w-14" : "w-64"}`} collapsible="icon">
-      {/* Logo */}
-      <div className="p-4 border-b border-border/20">
-        <div className={`flex items-center gap-2 ${!collapsed ? 'glass-card p-3' : ''}`}>
-          <AppLogo size="small" className="mb-0" />
-          {!collapsed && (
-            <h2 className="text-lg font-semibold">Investimentos</h2>
-          )}
-        </div>
-      </div>
-
       <SidebarContent>
         {/* Portfolio */}
         <SidebarGroup>
