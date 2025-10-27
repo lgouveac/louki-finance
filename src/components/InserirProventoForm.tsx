@@ -23,19 +23,19 @@ export function InserirProventoForm() {
   const [precoUnitario, setPrecoUnitario] = useState<string>("");
   const queryClient = useQueryClient();
 
-  // Buscar produtos únicos
+  // Buscar produtos únicos da carteira consolidada
   const { data: produtos = [] } = useQuery({
-    queryKey: ['produtos-unicos'],
+    queryKey: ['produtos-carteira-consolidada'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('proventos')
-        .select('Produto')
-        .not('Produto', 'is', null)
-        .order('Produto');
-      
+        .from('carteira_consolidada')
+        .select('codigo')
+        .not('codigo', 'is', null)
+        .order('codigo');
+
       if (error) throw error;
-      
-      const unique = [...new Set(data.map(item => item.Produto))].filter(Boolean);
+
+      const unique = [...new Set(data.map(item => item.codigo))].filter(Boolean);
       return unique as string[];
     },
   });
