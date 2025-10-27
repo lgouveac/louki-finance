@@ -365,15 +365,15 @@ export function DYCalculator() {
           </div>
 
           {/* Cards dos Cenários */}
-          {metaMensal > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Cenário Aportar */}
-              <Card className={`transition-all ${estrategiaValue <= 33 ? 'ring-2 ring-primary' : 'opacity-75'}`}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm">Só Aportar</CardTitle>
-                  <CardDescription className="text-xs">Manter DY atual</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Cenário Aportar */}
+            <Card className={`transition-all ${estrategiaValue <= 33 ? 'ring-2 ring-primary' : 'opacity-75'}`}>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">Só Aportar</CardTitle>
+                <CardDescription className="text-xs">Manter DY atual</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {metaMensal > 0 ? (
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
                       <span>DY:</span>
@@ -388,16 +388,22 @@ export function DYCalculator() {
                       <span className="font-bold">{formatCurrency(cenarios.cenarioAportar.aporte)}</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                ) : (
+                  <div className="text-center text-xs text-muted-foreground py-4">
+                    Digite uma meta mensal para ver os cenários
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-              {/* Cenário Mix */}
-              <Card className={`transition-all ${estrategiaValue > 33 && estrategiaValue < 67 ? 'ring-2 ring-primary' : 'opacity-75'}`}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm">Estratégia Mista</CardTitle>
-                  <CardDescription className="text-xs">Aportar + Melhorar DY</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
+            {/* Cenário Mix */}
+            <Card className={`transition-all ${estrategiaValue > 33 && estrategiaValue < 67 ? 'ring-2 ring-primary' : 'opacity-75'}`}>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">Estratégia Mista</CardTitle>
+                <CardDescription className="text-xs">Aportar + Melhorar DY</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {metaMensal > 0 ? (
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
                       <span>DY:</span>
@@ -412,16 +418,22 @@ export function DYCalculator() {
                       <span className="font-bold">{formatCurrency(cenarios.cenarioMix.aporte)}</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                ) : (
+                  <div className="text-center text-xs text-muted-foreground py-4">
+                    Digite uma meta mensal para ver os cenários
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-              {/* Cenário DY */}
-              <Card className={`transition-all ${estrategiaValue >= 67 ? 'ring-2 ring-primary' : 'opacity-75'}`}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm">Só Melhorar DY</CardTitle>
-                  <CardDescription className="text-xs">Manter capital atual</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
+            {/* Cenário DY */}
+            <Card className={`transition-all ${estrategiaValue >= 67 ? 'ring-2 ring-primary' : 'opacity-75'}`}>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm">Só Melhorar DY</CardTitle>
+                <CardDescription className="text-xs">Manter capital atual</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {metaMensal > 0 ? (
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
                       <span>DY:</span>
@@ -436,10 +448,14 @@ export function DYCalculator() {
                       <span className="font-bold text-green-600">R$ 0</span>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+                ) : (
+                  <div className="text-center text-xs text-muted-foreground py-4">
+                    Digite uma meta mensal para ver os cenários
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Resumo Atual */}
           {totalPortfolioValue > 0 && (
