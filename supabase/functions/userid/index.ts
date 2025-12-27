@@ -70,7 +70,7 @@ serve(async (req) => {
 
     console.log('Forwarding to N8N with headers:', Object.keys(n8nHeaders));
 
-    const result = await fetch("https://n8n.sof.to/webhook-test/0f7663d6-f5a2-4471-9136-18f2c6303fc8", {
+    const result = await fetch("https://n8n.sof.to/webhook/0f7663d6-f5a2-4471-9136-18f2c6303fc8", {
       method: "POST",
       headers: n8nHeaders,
       body: req.body
