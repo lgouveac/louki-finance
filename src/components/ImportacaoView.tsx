@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { FileUpIcon, UploadIcon } from "lucide-react";
+import { FileUpIcon, UploadIcon, Globe, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { TratamentoPlanilhaB3 } from "./TratamentoPlanilhaB3";
 export function ImportacaoView() {
   const [isUploading, setIsUploading] = useState(false);
+  const [isScrapping, setIsScrapping] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
   const {
     toast
@@ -110,9 +111,10 @@ export function ImportacaoView() {
       </div>
 
       <Tabs defaultValue="tratamento" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="tratamento">Tratamento B3</TabsTrigger>
           <TabsTrigger value="importacao">Importação Direta</TabsTrigger>
+          <TabsTrigger value="scrapping">Scrapping B3</TabsTrigger>
         </TabsList>
 
         <TabsContent value="tratamento">
@@ -207,6 +209,51 @@ export function ImportacaoView() {
                   </Button>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="scrapping" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="h-5 w-5" />
+                Scrapping B3
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground">
+                Executa a extração automática de dados diretamente da B3. Clique no botão abaixo para iniciar o processo.
+              </p>
+              <Button
+                size="lg"
+                disabled={isScrapping}
+                onClick={async () => {
+                  setIsScrapping(true);
+                  try {
+                    const res = await fetch("http://localhost:3000/webhook/extract-final", { method: "POST" });
+                    if (!res.ok) throw new Error(`Erro ${res.status}`);
+                    toast({ title: "Sucesso!", description: "Scrapping executado com sucesso." });
+                  } catch (error) {
+                    const msg = error instanceof Error ? error.message : "Erro desconhecido";
+                    toast({ title: "Erro", description: `Falha no scrapping: ${msg}`, variant: "destructive" });
+                  } finally {
+                    setIsScrapping(false);
+                  }
+                }}
+              >
+                {isScrapping ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Executando...
+                  </>
+                ) : (
+                  <>
+                    <Globe className="h-4 w-4" />
+                    Executar Scrapping
+                  </>
+                )}
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
