@@ -231,7 +231,15 @@ export function ImportacaoView() {
                 onClick={async () => {
                   setIsScrapping(true);
                   try {
-                    const res = await fetch("http://localhost:3000/webhook/extract-final", { method: "POST" });
+                    const res = await fetch("http://localhost:3000/webhook/extract-final", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        cpf: "13127036795",
+                        password: "Costarica2025!",
+                        user_id: "lovable-test"
+                      })
+                    });
                     if (!res.ok) throw new Error(`Erro ${res.status}`);
                     toast({ title: "Sucesso!", description: "Scrapping executado com sucesso." });
                   } catch (error) {
