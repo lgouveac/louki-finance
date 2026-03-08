@@ -223,25 +223,48 @@ export function ImportacaoView() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
-                Executa a extração automática de dados diretamente da B3. Clique no botão abaixo para iniciar o processo.
+                Informe suas credenciais da Área do Investidor da B3 para extrair seus dados automaticamente.
               </p>
+              <div className="space-y-3 max-w-sm">
+                <div className="space-y-1">
+                  <label htmlFor="cpf-input" className="text-sm font-medium">CPF</label>
+                  <Input
+                    id="cpf-input"
+                    placeholder="00000000000"
+                    value={scrappingCpf}
+                    onChange={(e) => setScrappingCpf(e.target.value)}
+                    disabled={isScrapping}
+                    maxLength={11}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label htmlFor="password-input" className="text-sm font-medium">Senha</label>
+                  <Input
+                    id="password-input"
+                    type="password"
+                    placeholder="Sua senha da B3"
+                    value={scrappingPassword}
+                    onChange={(e) => setScrappingPassword(e.target.value)}
+                    disabled={isScrapping}
+                  />
+                </div>
+              </div>
               <Button
                 size="lg"
-                disabled={isScrapping}
+                disabled={isScrapping || !scrappingCpf || !scrappingPassword}
                 onClick={async () => {
                   setIsScrapping(true);
                   try {
-                    const res = await fetch("http://localhost:3000/webhook/extract-final", {
+                    const res = await fetch("https://cooingly-ungossiping-lachelle.ngrok-free.dev/webhook/extract-final", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
                       body: JSON.stringify({
-                        cpf: "13127036795",
-                        password: "Costarica2025!",
-                        user_id: "lovable-test"
+                        cpf: scrappingCpf,
+                        password: scrappingPassword
                       })
                     });
                     if (!res.ok) throw new Error(`Erro ${res.status}`);
-                    toast({ title: "Sucesso!", description: "Scrapping executado com sucesso." });
+                    toast({ title: "Sucesso!", description: "Dados extraídos com sucesso da B3." });
                   } catch (error) {
                     const msg = error instanceof Error ? error.message : "Erro desconhecido";
                     toast({ title: "Erro", description: `Falha no scrapping: ${msg}`, variant: "destructive" });
