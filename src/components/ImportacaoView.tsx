@@ -12,6 +12,8 @@ export function ImportacaoView() {
   const [isUploading, setIsUploading] = useState(false);
   const [isScrapping, setIsScrapping] = useState(false);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [scrappingCpf, setScrappingCpf] = useState("");
+  const [scrappingPassword, setScrappingPassword] = useState("");
   const {
     toast
   } = useToast();
